@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <title>NexusLMS Documentation</title>
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<script>try { var t = localStorage.getItem('nexuslms-docs-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}</script>
 <style>
 :root {
   --sidebar: 288px; --topbar: 56px;
@@ -13,8 +14,10 @@
   --brand: #004ac6; --brand-soft: #eaf0ff; --link: #0043b3; --pre-bg: #0f172a; --pre-fg: #e2e8f0; --shadow: 0 1px 2px rgb(15 23 42 / 6%);
 }
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #0b0f14; --fg: #e5e7eb; --muted: #9ca3af; --border: #1f2937; --surface: #0f1620; --code: #1f2937; --brand: #60a5fa; --brand-soft: #0f1d33; --link: #93c5fd; --pre-bg: #020617; --shadow: none; }
+  :root:not([data-theme="light"]) { --bg: #0b0f14; --fg: #e5e7eb; --muted: #9ca3af; --border: #1f2937; --surface: #0f1620; --code: #1f2937; --brand: #60a5fa; --brand-soft: #0f1d33; --link: #93c5fd; --pre-bg: #020617; --shadow: none; --tip: #34d399; --tip-soft: #0b2a20; }
 }
+:root[data-theme="dark"] { --bg: #0b0f14; --fg: #e5e7eb; --muted: #9ca3af; --border: #1f2937; --surface: #0f1620; --code: #1f2937; --brand: #60a5fa; --brand-soft: #0f1d33; --link: #93c5fd; --pre-bg: #020617; --shadow: none; --tip: #34d399; --tip-soft: #0b2a20; }
+:root { --tip: #047857; --tip-soft: #ecfdf5; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .nav-expand svg { transition: none; } }
@@ -72,6 +75,38 @@ figcaption { margin-top: 8px; color: var(--muted); font-size: 14px; }
 .phones img { border-radius: 18px; }
 .to-top { position: fixed; right: 24px; bottom: 24px; z-index: 5; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--fg); box-shadow: var(--shadow); text-decoration: none; opacity: 0; visibility: hidden; transition: opacity 0.2s; }
 .to-top.visible { opacity: 1; visibility: visible; }
+.sidebar-tools { display: flex; gap: 8px; padding: 12px 12px 0; }
+.search { position: relative; flex: 1; }
+.search svg { position: absolute; top: 50%; left: 10px; color: var(--muted); transform: translateY(-50%); pointer-events: none; }
+.search input { width: 100%; height: 36px; padding: 0 34px 0 32px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; font-size: 14px; }
+.search input:focus { border-color: var(--brand); outline: 2px solid var(--brand-soft); }
+.search kbd { position: absolute; top: 50%; right: 8px; padding: 0 6px; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font: 12px/18px ui-monospace, Menlo, monospace; transform: translateY(-50%); }
+.search input:not(:placeholder-shown) + kbd { display: none; }
+.no-results { display: none; padding: 8px 12px; color: var(--muted); }
+.icon-button { display: grid; flex: none; place-items: center; width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg); cursor: pointer; }
+.icon-button:hover { background: var(--border); }
+.theme-dark-icon { display: none; }
+:root[data-theme="dark"] .theme-dark-icon { display: block; } :root[data-theme="dark"] .theme-light-icon { display: none; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-dark-icon { display: block; } :root:not([data-theme="light"]) .theme-light-icon { display: none; } }
+pre { position: relative; }
+.copy-btn { position: absolute; top: 8px; right: 8px; padding: 2px 10px; border: 1px solid rgb(148 163 184 / 40%); border-radius: 6px; background: rgb(15 23 42 / 70%); color: #e2e8f0; font: 12px/22px -apple-system, "Segoe UI", sans-serif; cursor: pointer; opacity: 0; transition: opacity 0.15s; }
+pre:hover .copy-btn, .copy-btn:focus-visible, .copy-btn.done { opacity: 1; }
+@media (hover: none) { .copy-btn { opacity: 1; } }
+.tip { margin: 16px 0; padding: 12px 16px; border: 1px solid var(--border); border-left: 4px solid var(--tip); border-radius: 10px; background: var(--tip-soft); }
+.online-note { color: var(--muted); font-size: 15px; }
+kbd { padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; background: var(--surface); font: 0.85em/1.4 ui-monospace, Menlo, monospace; }
+.steps { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin: 16px 0 8px; padding: 0; list-style: none; counter-reset: step; }
+.steps li { margin: 0; }
+.steps a { display: flex; flex-direction: column; gap: 4px; height: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--fg); text-decoration: none; transition: border-color 0.15s, transform 0.15s; }
+.steps a:hover { border-color: var(--brand); transform: translateY(-1px); }
+.steps a::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 28px; height: 28px; margin-bottom: 4px; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-weight: 700; font-size: 14px; }
+.steps strong { font-size: 15px; }
+.steps span { color: var(--muted); font-size: 14px; line-height: 1.5; }
+.faq details { margin: 8px 0; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+.faq summary { padding: 12px 16px; font-weight: 600; cursor: pointer; }
+.faq details[open] summary { border-bottom: 1px solid var(--border); }
+.faq details > div { padding: 4px 16px 8px; }
+@media print { .sidebar, .topbar, .to-top, .copy-btn { display: none !important; } .content { margin-left: 0; } .faq details > div { display: block; } }
 @media (max-width: 960px) {
   [id] { scroll-margin-top: calc(var(--topbar) + 16px); }
   .sidebar { transform: translateX(-100%); transition: transform 0.2s; }
@@ -81,6 +116,7 @@ figcaption { margin-top: 8px; color: var(--muted); font-size: 14px; }
   .topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 12px; height: var(--topbar); padding: 0 16px; border-bottom: 1px solid var(--border); background: var(--bg); }
   .menu-button { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 8px; color: var(--fg); cursor: pointer; }
   .menu-button:hover { background: var(--border); }
+  .topbar-theme { margin-left: auto; }
   .content-inner { padding: 24px 16px 80px; }
   table { display: block; overflow-x: auto; }
   h1 { font-size: 30px; }
@@ -94,6 +130,7 @@ figcaption { margin-top: 8px; color: var(--muted); font-size: 14px; }
 <div class="topbar">
   <label for="nav-toggle" class="menu-button" aria-label="Contents"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></label>
   <strong>NexusLMS</strong> <span class="brand-sub">Documentation</span>
+  <button type="button" class="icon-button theme-toggle topbar-theme" aria-label="Switch between light and dark mode"><svg class="theme-light-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="theme-dark-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
 </div>
 <aside class="sidebar">
   <a class="brand" href="#top">
@@ -103,7 +140,16 @@ figcaption { margin-top: 8px; color: var(--muted); font-size: 14px; }
       <span class="brand-sub">Documentation <span class="badge">v1.0.0</span></span>
     </span>
   </a>
+  <div class="sidebar-tools">
+    <label class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="doc-search" placeholder="Search the docs" aria-label="Search the documentation" autocomplete="off">
+      <kbd aria-hidden="true">/</kbd>
+    </label>
+    <button type="button" class="icon-button theme-toggle" aria-label="Switch between light and dark mode"><svg class="theme-light-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="theme-dark-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  </div>
   <nav aria-label="Contents">
+    <p class="no-results" id="no-results">No matching sections. Try another word.</p>
     <ul>
       <li class="nav-group">
         <div class="nav-row">
@@ -112,7 +158,7 @@ figcaption { margin-top: 8px; color: var(--muted); font-size: 14px; }
         </div>
         <ul id="nav-introduction">
           <li><a href="#package">What's in the package</a></li>
-          <li><a href="#introduction-setup-order">Setup order</a></li>
+          <li><a href="#introduction-setup-order">Quick start</a></li>
           <li><a href="#requirements">Requirements</a></li>
         </ul>
       </li>
@@ -175,7 +221,16 @@ figcaption { margin-top: 8px; color: var(--muted); font-size: 14px; }
         </ul>
       </li>
       <li class="nav-group"><div class="nav-row"><a href="#connections" class="nav-section"><span class="nav-icon" aria-hidden="true">🌐</span>External services</a></div></li>
-      <li class="nav-group"><div class="nav-row"><a href="#troubleshooting" class="nav-section"><span class="nav-icon" aria-hidden="true">🧰</span>Troubleshooting</a></div></li>
+      <li class="nav-group">
+        <div class="nav-row">
+          <a href="#troubleshooting" class="nav-section"><span class="nav-icon" aria-hidden="true">🧰</span>Troubleshooting &amp; FAQ</a>
+          <button type="button" class="nav-expand" aria-expanded="false" aria-controls="nav-troubleshooting" aria-label="Troubleshooting and FAQ topics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+        <ul id="nav-troubleshooting">
+          <li><a href="#faq">Frequently asked questions</a></li>
+        </ul>
+      </li>
+      <li class="nav-group"><div class="nav-row"><a href="#support" class="nav-section"><span class="nav-icon" aria-hidden="true">📧</span>Support &amp; Contact</a></div></li>
       <li class="nav-group">
         <div class="nav-row">
           <a href="#credits" class="nav-section"><span class="nav-icon" aria-hidden="true">📜</span>Credits and licenses</a>
@@ -211,6 +266,8 @@ figcaption { margin-top: 8px; color: var(--muted); font-size: 14px; }
   <li><strong>Mobile app</strong>: the learner experience on iOS and Android, including push notifications.</li>
 </ul>
 <p>This documentation is for <strong>version 1.0.0</strong>. It is a single page that opens offline from the <code>documentation</code> folder.</p>
+<p class="online-note">It is also online, always in its latest version, at <a href="https://shamimcse1.github.io/nexuslms-docs/">shamimcse1.github.io/nexuslms-docs</a>. Use the search box at the top of the menu (or press <kbd>/</kbd>) to find any topic.</p>
+<div class="tip"><strong>Want to look around first?</strong> Open the live demo's <a href="https://nexuslms.dev-shamim.com/admin/login">admin panel</a> or <a href="https://nexuslms.dev-shamim.com/portal/login">learner portal</a>, or install the <a href="https://drive.google.com/file/d/1KsHULuO52kaszueLAixxoH6TI37taYiW/view?usp=sharing">Android demo app</a>. The sign-in pages show the demo accounts; click one to fill it in. The demo's data resets every 15 minutes.</div>
 <h3 id="package">What's in the package</h3>
 <table>
   <tr><th>Folder</th><th>What it is</th></tr>
@@ -219,13 +276,14 @@ figcaption { margin-top: 8px; color: var(--muted); font-size: 14px; }
   <tr><td><code>documentation/</code></td><td>This documentation and its screenshots (<code>assets/</code>).</td></tr>
 </table>
 <p>The backend comes without the folders Composer and npm create (<code>vendor/</code>, <code>node_modules/</code> and <code>public/build/</code>), and the app without Flutter's <code>build/</code> folder. The first setup steps add them.</p>
-<h3 id="introduction-setup-order">Setup order</h3>
-<ol>
-  <li><strong>Backend:</strong> install the PHP packages and build the web assets, upload the files and run the web installer (<a href="#install">Installation</a>).</li>
-  <li><strong>Admin panel:</strong> sign in, set your site name, logo and time zone, then add departments, people and courses (<a href="#admin-first-steps">First-time setup</a>).</li>
-  <li><strong>Email and push:</strong> connect a mail server for password resets (<a href="#email">Email</a>). Push notifications through Firebase are optional (<a href="#push">Push notifications</a>).</li>
-  <li><strong>Mobile app:</strong> set your API address, rename the app, change the icon and build it (<a href="#mobile-setup">Mobile app setup</a>).</li>
-  <li><strong>Go live:</strong> work through the <a href="#going-live">going-live checklist</a>.</li>
+<h3 id="introduction-setup-order">Quick start</h3>
+<p>Setting up takes five steps. Click a step to jump to its instructions.</p>
+<ol class="steps">
+  <li><a href="#install"><strong>Install the backend</strong><span>Install the PHP packages, build the web assets, upload the files and run the web installer.</span></a></li>
+  <li><a href="#admin-first-steps"><strong>Set up the admin panel</strong><span>Sign in, set your site name, logo and time zone, then add departments, people and courses.</span></a></li>
+  <li><a href="#email"><strong>Connect email</strong><span>A mail server is needed for password resets. Push notifications are optional.</span></a></li>
+  <li><a href="#mobile-setup"><strong>Build the mobile app</strong><span>Set your API address, rename the app, change the icon and build it.</span></a></li>
+  <li><a href="#going-live"><strong>Go live</strong><span>Work through the going-live checklist before inviting people.</span></a></li>
 </ol>
 <h3 id="requirements">Requirements</h3>
 <ul>
@@ -593,6 +651,33 @@ storeFile=/path/to/upload-keystore.jks</code></pre>
   <tr><td>No push notifications</td><td>Check the Firebase files, the service-account key in Admin &rarr; Settings, the event switches, and (iOS) the APNs key. Push does not work on the iOS simulator without APNs.</td></tr>
   <tr><td>Live class or due date reminders are not sent</td><td>Make sure the <a href="#cron">cron entry</a> is installed. Due date reminders also need the switch under <strong>Settings &rarr; Security &amp; Compliance</strong>.</td></tr>
 </table>
+<h3 id="faq">Frequently asked questions</h3>
+<div class="faq">
+  <details><summary>Does it run on shared (cPanel) hosting?</summary><div><p>Yes, as long as the host offers PHP 8.3+, MySQL, a <a href="#cron">cron job</a> and symbolic links (for <code>php artisan storage:link</code>). You can run <code>composer install</code> and <code>npm run build</code> on your own computer and upload the result if the host has no terminal. A VPS works too.</p></div></details>
+  <details><summary>Do I need a queue worker or Redis?</summary><div><p>No. Emails and push notifications are sent right after each request finishes, so only the <a href="#cron">cron job</a> is needed.</p></div></details>
+  <details><summary>Is the mobile app required?</summary><div><p>No. Learners can do everything in the browser through the <a href="#portal">learner portal</a>. The app is an extra way to learn on the phone.</p></div></details>
+  <details><summary>Do I need Firebase?</summary><div><p>Only for push notifications. Without Firebase, the app and the website work normally and people still get email and in-app notifications. See <a href="#push">Push notifications</a>.</p></div></details>
+  <details><summary>Can learners sign up by themselves?</summary><div><p>No, this is a company platform: admins add people under <strong>Admin &rarr; Users</strong>. When you add one person you choose their first password and they get a welcome email; people added by CSV import get an email with a link to choose their own password.</p></div></details>
+  <details><summary>How do I point the app at my server?</summary><div><p>Set <code>API_BASE_URL</code> in <code>main/mobile/assets/.env</code> to your site's address followed by <code>/api/v1</code>, then stop and run the app again. See <a href="#mobile-setup">Mobile app setup</a>.</p></div></details>
+  <details><summary>How do I change the name, logo and colors?</summary><div><p>For the website, use <strong>Admin &rarr; Settings &rarr; General &amp; Branding</strong> (see <a href="#white-labeling">White-labeling</a>). For the app, see <a href="#mobile-rename">Rename the app and package</a> and <a href="#mobile-branding">Icon, colors and font</a>.</p></div></details>
+  <details><summary>Should I import the demo data on my live site?</summary><div><p>No. Demo data is for trying the platform: the sample accounts use publicly documented passwords. Leave it off in the installer, or delete those accounts before you invite real people.</p></div></details>
+</div>
+
+<h2 id="support"><span class="hi" aria-hidden="true">📧</span>Support &amp; Contact</h2>
+<p>If you run into a problem or have a question, please contact us. Many answers are already in <a href="#troubleshooting">Troubleshooting &amp; FAQ</a>.</p>
+<div class="note">
+  <p style="margin:0"><strong>WhatsApp:</strong> <a href="https://wa.me/8801744165013">+880 1744165013</a></p>
+  <p style="margin:0"><strong>Email:</strong> <a href="mailto:codercampapp@gmail.com">codercampapp@gmail.com</a></p>
+</div>
+<p>You can also use the <strong>Support</strong> tab on the NexusLMS item page on CodeCanyon. Item support follows Envato's <a href="https://codecanyon.net/page/item_support_policy">item support policy</a>: questions about the item and fixes for reported bugs. Customization, installation on your servers, and third-party services such as your mail provider, Firebase, Apple and Google Play accounts are outside item support.</p>
+<p>To help us answer quickly, tell us:</p>
+<ul>
+  <li>what it is about: the backend and admin panel, the learner portal or the mobile app, and Android or iOS;</li>
+  <li>the exact error message, and the step or command that caused it;</li>
+  <li>your versions: the NexusLMS version (at the bottom of the admin menu), <code>php -v</code> for the backend and <code>flutter --version</code> for the app;</li>
+  <li>for a server error, the last lines of <code>storage/logs/laravel.log</code>, with passwords and keys removed;</li>
+  <li>what you have already tried from this documentation.</li>
+</ul>
 
 <h2 id="credits"><span class="hi" aria-hidden="true">📜</span>Credits and licenses</h2>
 <h3 id="credits-server">Server</h3>
@@ -671,6 +756,116 @@ storeFile=/path/to/upload-keystore.jks</code></pre>
   activate(location.hash ? location.hash.slice(1) : 'introduction');
   var top = document.querySelector('.to-top');
   window.addEventListener('scroll', function () { top.classList.toggle('visible', window.scrollY > 600); }, { passive: true });
+
+  // Light / dark switch. Without a saved choice the page follows the system setting.
+  var root = document.documentElement;
+  function isDark() {
+    var t = root.getAttribute('data-theme');
+    return t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  document.querySelectorAll('.theme-toggle').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var next = isDark() ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('nexuslms-docs-theme', next); } catch (e) {}
+    });
+  });
+
+  // Copy button on every command block.
+  function copyText(text, done) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+    } else { fallback(text, done); }
+  }
+  function fallback(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  document.querySelectorAll('.content pre').forEach(function (pre) {
+    var code = pre.querySelector('code') || pre;
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'copy-btn'; b.textContent = 'Copy';
+    b.setAttribute('aria-label', 'Copy this command');
+    b.addEventListener('click', function () {
+      copyText(code.innerText.replace(/\n$/, ''), function () {
+        b.textContent = 'Copied'; b.classList.add('done');
+        setTimeout(function () { b.textContent = 'Copy'; b.classList.remove('done'); }, 1500);
+      });
+    });
+    pre.appendChild(b);
+  });
+
+  // Search: filters the menu by section titles and by the text inside each section.
+  var sectionText = {};
+  var heads = document.querySelectorAll('.content h2[id], .content h3[id], .content h4[id]');
+  heads.forEach(function (h, i) {
+    var text = h.textContent, n = h.nextElementSibling, stop = heads[i + 1];
+    while (n && n !== stop && !(n.matches && n.matches('h2, h3, h4'))) { text += ' ' + n.textContent; n = n.nextElementSibling; }
+    sectionText[h.id] = text.toLowerCase();
+  });
+  function textFor(id) {
+    // A section also matches on everything below it, up to the next heading of the same or a higher level.
+    var h = document.getElementById(id); if (!h) return '';
+    var level = +h.tagName.charAt(1), text = sectionText[id] || '', n = h.nextElementSibling;
+    while (n && !(/^H[2-4]$/.test(n.tagName) && +n.tagName.charAt(1) <= level)) {
+      if (n.id && sectionText[n.id]) text += ' ' + sectionText[n.id];
+      n = n.nextElementSibling;
+    }
+    return text;
+  }
+  var search = document.getElementById('doc-search');
+  var empty = document.getElementById('no-results');
+  function runSearch() {
+    var q = search.value.trim().toLowerCase(), any = false;
+    groups.forEach(function (g) {
+      var main = g.querySelector('.nav-section');
+      var subs = g.querySelectorAll(':scope > ul a');
+      if (!q) {
+        g.style.display = ''; subs.forEach(function (a) { a.parentNode.style.display = ''; });
+        return;
+      }
+      var subHit = false;
+      subs.forEach(function (a) {
+        var id = a.getAttribute('href').slice(1);
+        var hit = a.textContent.toLowerCase().indexOf(q) > -1 || textFor(id).indexOf(q) > -1;
+        a.parentNode.style.display = hit ? '' : 'none';
+        if (hit) subHit = true;
+      });
+      var mainId = main.getAttribute('href').slice(1);
+      var mainHit = main.textContent.toLowerCase().indexOf(q) > -1 || textFor(mainId).indexOf(q) > -1;
+      g.style.display = (mainHit || subHit) ? '' : 'none';
+      if (subHit) setOpen(g, true);
+      if (mainHit || subHit) any = true;
+    });
+    empty.style.display = (q && !any) ? 'block' : 'none';
+  }
+  search.addEventListener('input', runSearch);
+  search.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      // Jump to the first matching sub-topic, or else the first matching section.
+      function firstVisible(sel) {
+        return Array.prototype.find.call(document.querySelectorAll(sel), function (a) { return a.offsetParent !== null; });
+      }
+      var target = (search.value.trim() && firstVisible('.sidebar nav ul ul a')) || firstVisible('.sidebar nav .nav-section');
+      if (target) {
+        var dest = document.getElementById(target.getAttribute('href').slice(1));
+        if (dest) dest.scrollIntoView();
+        try { history.replaceState(null, '', target.getAttribute('href')); } catch (err) {}
+        if (toggle) toggle.checked = false;
+      }
+    } else if (e.key === 'Escape') { search.value = ''; runSearch(); search.blur(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA') {
+      e.preventDefault();
+      if (toggle && window.matchMedia('(max-width: 960px)').matches) toggle.checked = true;
+      search.focus();
+    }
+  });
 })();
 </script>
 </body>
