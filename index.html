@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>NexusLMS Documentation</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<style>
+:root {
+  --sidebar: 288px; --topbar: 56px;
+  --bg: #ffffff; --fg: #111827; --muted: #6b7280; --border: #e5e7eb; --surface: #f8fafc; --code: #f1f5f9;
+  --brand: #004ac6; --brand-soft: #eaf0ff; --link: #0043b3; --pre-bg: #0f172a; --pre-fg: #e2e8f0; --shadow: 0 1px 2px rgb(15 23 42 / 6%);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0b0f14; --fg: #e5e7eb; --muted: #9ca3af; --border: #1f2937; --surface: #0f1620; --code: #1f2937; --brand: #60a5fa; --brand-soft: #0f1d33; --link: #93c5fd; --pre-bg: #020617; --shadow: none; }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .nav-expand svg { transition: none; } }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: var(--link); }
+.nav-toggle { position: absolute; opacity: 0; pointer-events: none; }
+.topbar, .backdrop { display: none; }
+.sidebar { position: fixed; top: 0; bottom: 0; left: 0; z-index: 20; display: flex; flex-direction: column; width: var(--sidebar); border-right: 1px solid var(--border); background: var(--surface); }
+.brand { display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--border); color: var(--fg); text-decoration: none; }
+.brand-mark { display: grid; flex: none; place-items: center; width: 40px; height: 40px; overflow: hidden; border-radius: 10px; }
+.brand-mark img { width: 40px; height: 40px; }
+.brand-name { display: block; font-size: 18px; font-weight: 700; line-height: 1.2; }
+.brand-sub { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; line-height: 1.4; }
+.badge { padding: 1px 8px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--muted); font-size: 12px; }
+.sidebar nav { flex: 1; overflow-y: auto; padding: 16px 12px 32px; font-size: 14px; scrollbar-width: thin; }
+.sidebar nav ul { list-style: none; margin: 0; padding: 0; }
+.sidebar nav > ul > li { margin-bottom: 8px; }
+.sidebar nav a { display: block; padding: 6px 12px; border-radius: 8px; color: var(--fg); line-height: 1.4; text-decoration: none; }
+.sidebar nav a:hover { background: var(--border); }
+.nav-row { display: flex; align-items: center; gap: 2px; }
+.nav-section { flex: 1; font-weight: 600; }
+.nav-icon { display: inline-block; width: 22px; }
+.nav-expand { display: grid; place-items: center; width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; }
+.nav-expand:hover { background: var(--border); color: var(--fg); }
+.nav-expand svg { transition: transform 0.15s; }
+.nav-group.open .nav-expand svg { transform: rotate(90deg); }
+.nav-group > ul { display: none; margin: 2px 0 6px 18px; padding-left: 10px; border-left: 1px solid var(--border); }
+.nav-group.open > ul { display: block; }
+.nav-group > ul a { color: var(--muted); font-size: 13px; }
+.sidebar nav a.active { background: var(--brand-soft); color: var(--brand); font-weight: 600; }
+.content { margin-left: var(--sidebar); }
+.content-inner { max-width: 1054px; padding: 40px 48px 96px; }
+h1, h2, h3, h4 { line-height: 1.25; }
+h1 { font-size: 36px; margin: 0 0 8px; }
+h2 { font-size: 32px; margin: 64px 0 16px; padding-top: 8px; }
+h2:first-of-type { margin-top: 0; }
+h3 { font-size: 22px; margin: 36px 0 12px; }
+h2 .hi { display: inline-block; margin-right: 12px; }
+[id] { scroll-margin-top: 16px; }
+p, li { color: var(--fg); }
+ol li, ul li { margin: 4px 0; }
+code { padding: 2px 6px; border-radius: 6px; background: var(--code); font: 0.86em/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+pre { overflow-x: auto; padding: 14px 16px; border-radius: 10px; background: var(--pre-bg); color: var(--pre-fg); font-size: 14px; line-height: 1.55; }
+pre code { padding: 0; background: none; color: inherit; }
+table { width: 100%; margin: 16px 0; border-collapse: collapse; font-size: 14px; }
+th, td { padding: 10px 14px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+th { background: var(--surface); font-weight: 600; }
+.note, .warn { margin: 16px 0; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); border-left: 4px solid var(--brand); background: var(--surface); }
+.warn { border-left-color: #f59e0b; }
+figure { margin: 18px 0 28px; }
+figure img { display: block; max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); }
+figcaption { margin-top: 8px; color: var(--muted); font-size: 14px; }
+.phones { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; margin: 18px 0 28px; }
+.phones figure { margin: 0; }
+.phones img { border-radius: 18px; }
+.to-top { position: fixed; right: 24px; bottom: 24px; z-index: 5; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--fg); box-shadow: var(--shadow); text-decoration: none; opacity: 0; visibility: hidden; transition: opacity 0.2s; }
+.to-top.visible { opacity: 1; visibility: visible; }
+@media (max-width: 960px) {
+  [id] { scroll-margin-top: calc(var(--topbar) + 16px); }
+  .sidebar { transform: translateX(-100%); transition: transform 0.2s; }
+  .nav-toggle:checked ~ .sidebar { transform: none; box-shadow: 0 0 24px rgb(0 0 0 / 20%); }
+  .nav-toggle:checked ~ .backdrop { position: fixed; inset: 0; z-index: 15; display: block; background: rgb(0 0 0 / 40%); }
+  .content { margin-left: 0; }
+  .topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 12px; height: var(--topbar); padding: 0 16px; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .menu-button { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 8px; color: var(--fg); cursor: pointer; }
+  .menu-button:hover { background: var(--border); }
+  .content-inner { padding: 24px 16px 80px; }
+  table { display: block; overflow-x: auto; }
+  h1 { font-size: 30px; }
+  h2 { font-size: 26px; margin-top: 48px; }
+  h3 { font-size: 20px; }
+}
+</style>
+</head>
+<body id="top">
+<input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
+<div class="topbar">
+  <label for="nav-toggle" class="menu-button" aria-label="Contents"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></label>
+  <strong>NexusLMS</strong> <span class="brand-sub">Documentation</span>
+</div>
+<aside class="sidebar">
+  <a class="brand" href="#top">
+    <span class="brand-mark"><img src="assets/logo.svg" alt="" width="40" height="40"></span>
+    <span>
+      <span class="brand-name">NexusLMS</span>
+      <span class="brand-sub">Documentation <span class="badge">v1.0.0</span></span>
+    </span>
+  </a>
+  <nav aria-label="Contents">
+    <ul>
+      <li class="nav-group">
+        <div class="nav-row">
+          <a href="#introduction" class="nav-section"><span class="nav-icon" aria-hidden="true">📘</span>Introduction</a>
+          <button type="button" class="nav-expand" aria-expanded="false" aria-controls="nav-introduction" aria-label="Introduction topics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+        <ul id="nav-introduction">
+          <li><a href="#package">What's in the package</a></li>
+          <li><a href="#introduction-setup-order">Setup order</a></li>
+          <li><a href="#requirements">Requirements</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <div class="nav-row">
+          <a href="#backend" class="nav-section"><span class="nav-icon" aria-hidden="true">🖥️</span>Backend &amp; admin panel</a>
+          <button type="button" class="nav-expand" aria-expanded="false" aria-controls="nav-backend" aria-label="Backend and admin panel topics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+        <ul id="nav-backend">
+          <li><a href="#install">Installation</a></li>
+          <li><a href="#admin">Admin panel</a></li>
+          <li><a href="#demo-credentials">Demo credentials</a></li>
+          <li><a href="#white-labeling">White-labeling</a></li>
+          <li><a href="#portal">Learner portal</a></li>
+          <li><a href="#architecture">Architecture</a></li>
+          <li><a href="#api">API</a></li>
+          <li><a href="#tests">Tests</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <div class="nav-row">
+          <a href="#mobile-setup" class="nav-section"><span class="nav-icon" aria-hidden="true">📱</span>Mobile app setup</a>
+          <button type="button" class="nav-expand" aria-expanded="false" aria-controls="nav-mobile-setup" aria-label="Mobile app setup topics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+        <ul id="nav-mobile-setup">
+          <li><a href="#mobile-setup-what-the-app-looks-like">What the app looks like</a></li>
+          <li><a href="#mobile-setup-testing-on-a-real-phone">Testing on a real phone</a></li>
+          <li><a href="#mobile-setup-file-structure">File structure</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <div class="nav-row">
+          <a href="#mobile-rename" class="nav-section"><span class="nav-icon" aria-hidden="true">✏️</span>Rename the app and package</a>
+          <button type="button" class="nav-expand" aria-expanded="false" aria-controls="nav-mobile-rename" aria-label="Rename the app and package topics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+        <ul id="nav-mobile-rename">
+          <li><a href="#mobile-rename-app-name">App name</a></li>
+          <li><a href="#mobile-rename-package-name-android-and-bundle-id-ios">Package name (Android) and bundle ID (iOS)</a></li>
+        </ul>
+      </li>
+      <li class="nav-group"><div class="nav-row"><a href="#mobile-branding" class="nav-section"><span class="nav-icon" aria-hidden="true">🎨</span>Icon, colors and font</a></div></li>
+      <li class="nav-group">
+        <div class="nav-row">
+          <a href="#mobile-release" class="nav-section"><span class="nav-icon" aria-hidden="true">🚀</span>Release builds and signing</a>
+          <button type="button" class="nav-expand" aria-expanded="false" aria-controls="nav-mobile-release" aria-label="Release builds and signing topics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+        <ul id="nav-mobile-release">
+          <li><a href="#mobile-release-android">Android</a></li>
+          <li><a href="#mobile-release-ios">iOS</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <div class="nav-row">
+          <a href="#push" class="nav-section"><span class="nav-icon" aria-hidden="true">🔔</span>Push notifications</a>
+          <button type="button" class="nav-expand" aria-expanded="false" aria-controls="nav-push" aria-label="Push notifications topics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+        <ul id="nav-push">
+          <li><a href="#push-1-create-a-firebase-project">1. Create a Firebase project</a></li>
+          <li><a href="#push-2-connect-the-server">2. Connect the server</a></li>
+        </ul>
+      </li>
+      <li class="nav-group"><div class="nav-row"><a href="#connections" class="nav-section"><span class="nav-icon" aria-hidden="true">🌐</span>External services</a></div></li>
+      <li class="nav-group"><div class="nav-row"><a href="#troubleshooting" class="nav-section"><span class="nav-icon" aria-hidden="true">🧰</span>Troubleshooting</a></div></li>
+      <li class="nav-group">
+        <div class="nav-row">
+          <a href="#credits" class="nav-section"><span class="nav-icon" aria-hidden="true">📜</span>Credits and licenses</a>
+          <button type="button" class="nav-expand" aria-expanded="false" aria-controls="nav-credits" aria-label="Credits and licenses topics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+        <ul id="nav-credits">
+          <li><a href="#credits-server">Server</a></li>
+          <li><a href="#credits-mobile-app">Mobile app</a></li>
+        </ul>
+      </li>
+      <li class="nav-group">
+        <div class="nav-row">
+          <a href="#changelog" class="nav-section"><span class="nav-icon" aria-hidden="true">📝</span>Changelog</a>
+          <button type="button" class="nav-expand" aria-expanded="false" aria-controls="nav-changelog" aria-label="Changelog topics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+        <ul id="nav-changelog">
+          <li><a href="#changelog-1-0-0">1.0.0</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</aside>
+<label for="nav-toggle" class="backdrop" aria-hidden="true"></label>
+<main class="content">
+<div class="content-inner">
+
+<h2 id="introduction"><span class="hi" aria-hidden="true">📘</span>Introduction</h2>
+<p>NexusLMS is a corporate training platform: a Laravel backend with an <strong>admin panel</strong> and a <strong>learner web portal</strong>, a REST API, and a Flutter <strong>mobile app</strong> for iOS and Android. Admins build courses, quizzes and assignments and assign them to departments; employees learn in the browser or on their phone.</p>
+<ul>
+  <li><strong>Admin panel</strong> (<code>/admin</code>): courses, modules and lessons, quizzes, assignments and grading, learning paths, live classes, certificates, departments, users, roles and permissions, notifications, reports and settings.</li>
+  <li><strong>Learner portal</strong> (<code>/portal</code>): employees take courses, quizzes and assignments, join live classes, view and print certificates, and verify credentials in the browser.</li>
+  <li><strong>REST API</strong> (<code>/api/v1</code>): token-based API used by the mobile app.</li>
+  <li><strong>Mobile app</strong>: the learner experience on iOS and Android, including push notifications.</li>
+</ul>
+<p>This documentation is for <strong>version 1.0.0</strong>. It is a single page that opens offline from the <code>documentation</code> folder.</p>
+<h3 id="package">What's in the package</h3>
+<table>
+  <tr><th>Folder</th><th>What it is</th></tr>
+  <tr><td><code>main/backend/</code></td><td>Laravel application: admin panel, learner portal, REST API and web installer (Laravel 13, PHP 8.3+).</td></tr>
+  <tr><td><code>main/mobile/</code></td><td>Flutter app for learners (Android and iOS).</td></tr>
+  <tr><td><code>documentation/</code></td><td>This documentation and its screenshots (<code>assets/</code>).</td></tr>
+</table>
+<p>The backend comes without the folders Composer and npm create (<code>vendor/</code>, <code>node_modules/</code> and <code>public/build/</code>), and the app without Flutter's <code>build/</code> folder. The first setup steps add them.</p>
+<h3 id="introduction-setup-order">Setup order</h3>
+<ol>
+  <li><strong>Backend:</strong> install the PHP packages and build the web assets, upload the files and run the web installer (<a href="#install">Installation</a>).</li>
+  <li><strong>Admin panel:</strong> sign in, set your site name, logo and time zone, then add departments, people and courses (<a href="#admin-first-steps">First-time setup</a>).</li>
+  <li><strong>Email and push:</strong> connect a mail server for password resets (<a href="#email">Email</a>). Push notifications through Firebase are optional (<a href="#push">Push notifications</a>).</li>
+  <li><strong>Mobile app:</strong> set your API address, rename the app, change the icon and build it (<a href="#mobile-setup">Mobile app setup</a>).</li>
+  <li><strong>Go live:</strong> work through the <a href="#going-live">going-live checklist</a>.</li>
+</ol>
+<h3 id="requirements">Requirements</h3>
+<ul>
+  <li><strong>Server:</strong> PHP 8.3 or newer with BCMath, Ctype, cURL, DOM, Fileinfo, Filter, Hash, JSON, Mbstring, OpenSSL, PCRE, PDO, PDO MySQL, Tokenizer and XML; MySQL 8.0+ or MariaDB 10.6+; Apache or Nginx with the document root on <code>public</code>; HTTPS; a cron job. Composer 2 and Node.js 20.19+ or 22.12+ are needed to install, not to run. No queue worker is needed.</li>
+  <li><strong>Mobile app:</strong> Flutter 3.44 or newer (Dart 3.12+). Android Studio with Android SDK 36; the app runs on Android 7.0 (API 24) and newer. A Mac with Xcode 16+ and CocoaPods for iOS; the app runs on iOS 15 and newer.</li>
+  <li><strong>Accounts:</strong> a mail (SMTP) provider; a Firebase project if you want push notifications (optional); a Google Play developer account and the Apple Developer Program to publish the app.</li>
+</ul>
+
+<h2 id="backend"><span class="hi" aria-hidden="true">🖥️</span>Backend &amp; admin panel</h2>
+<p>The backend in <code>main/backend</code> is a Laravel 13 application. It serves the admin panel at <code>/admin</code>, the learner portal at <code>/portal</code>, the REST API at <code>/api/v1</code> and the web installer at <code>/install</code>.</p>
+<h3 id="install">Installation</h3>
+<ol>
+  <li>Upload the contents of <code>main/backend</code> to your server, for example to <code>/var/www/nexuslms</code>.</li>
+  <li>Point your domain's document root to the <code>public</code> folder inside it.</li>
+  <li>Install the PHP packages:
+<pre><code>cd /var/www/nexuslms
+composer install --no-dev --optimize-autoloader</code></pre></li>
+  <li>Build the web assets (CSS and JavaScript):
+<pre><code>npm ci
+npm run build</code></pre></li>
+  <li>Make the storage and cache folders writable by the web server:
+<pre><code>chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache</code></pre>
+  (Use your web server's user instead of <code>www-data</code> if it differs.)</li>
+  <li>Create an empty MySQL database and a database user with full access to it.</li>
+  <li>Open <code>https://your-domain.com/install</code> in your browser and follow the <a href="#installer">web installer</a>.</li>
+</ol>
+<h4 id="installer">Web installer</h4>
+<ol>
+  <li><strong>Requirements:</strong> checks the PHP version, extensions and folder permissions. Fix anything marked red before continuing.</li>
+  <li><strong>Database:</strong> enter the database host, port, name, user and password. The installer tests the connection and saves it to <code>.env</code>.</li>
+  <li><strong>Migrate:</strong> creates the database tables. The <em>Import demo data</em> option adds sample courses, learners and content. Leave it off on a live site: the sample accounts use publicly documented passwords.</li>
+  <li><strong>Administrator:</strong> choose the site name, URL and your own administrator name, email and password.</li>
+  <li><strong>Finish:</strong> the installer switches the site to production mode (<code>APP_ENV=production</code>, <code>APP_DEBUG=false</code>), links the public storage folder and locks itself. Sign in at <code>/admin</code>.</li>
+</ol>
+<figure><img src="assets/screenshots/installation/01-requirements.png" alt="Installer step 1 checks the PHP version, extensions and folder permissions." loading="lazy"><figcaption>Figure 1: Installer step 1 checks the PHP version, extensions and folder permissions.</figcaption></figure>
+<figure><img src="assets/screenshots/installation/02-database.png" alt="Installer step 2: enter your database connection details." loading="lazy"><figcaption>Figure 2: Installer step 2: enter your database connection details.</figcaption></figure>
+<figure><img src="assets/screenshots/installation/03-migrate.png" alt="Installer step 3 creates the tables. Leave demo data off on a live site." loading="lazy"><figcaption>Figure 3: Installer step 3 creates the tables. Leave demo data off on a live site.</figcaption></figure>
+<figure><img src="assets/screenshots/installation/04-administrator.png" alt="Installer step 4: choose the site name and your own administrator account." loading="lazy"><figcaption>Figure 4: Installer step 4: choose the site name and your own administrator account.</figcaption></figure>
+<figure><img src="assets/screenshots/installation/05-installed.png" alt="The installer finishes, switches to production mode and locks itself." loading="lazy"><figcaption>Figure 5: The installer finishes, switches to production mode and locks itself.</figcaption></figure>
+<figure><img src="assets/screenshots/installation/06-admin-login.png" alt="The admin sign-in page at /admin." loading="lazy"><figcaption>Figure 6: The admin sign-in page at /admin.</figcaption></figure>
+<div class="note">If you imported demo data, change the passwords of the sample accounts (or delete them) under <strong>Admin &rarr; Users</strong> before inviting real learners.</div>
+<p>For a public demo site only, set <code>DEMO_MODE=true</code> in <code>.env</code> to show the sample sign-in accounts on the login pages. It is off by default.</p>
+<h4 id="cron">Scheduler (cron)</h4>
+<p>Live class reminders (every 5 minutes), due date and certificate expiry reminders (once a day at 08:00) and the weekly cleanup of replaced assignment files run through the Laravel scheduler. Add this single cron entry on your server:</p>
+<pre><code>* * * * * cd /var/www/nexuslms &amp;&amp; php artisan schedule:run &gt;&gt; /dev/null 2&gt;&amp;1</code></pre>
+<p>Everything else works without it. No queue worker is required: push notifications and emails are sent right after each request finishes.</p>
+<h4 id="email">Email</h4>
+<p>Password reset emails need a working mail server. Set these values in <code>.env</code> (your provider gives you them):</p>
+<pre><code>MAIL_MAILER=smtp
+MAIL_HOST=smtp.your-provider.com
+MAIL_PORT=587
+MAIL_USERNAME=your-username
+MAIL_PASSWORD=your-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="learning@your-company.com"</code></pre>
+<p>You can also enter these in <strong>Admin &rarr; Settings &rarr; SMTP Email Server</strong>. Values saved there are used instead of the <code>.env</code> values; leave the host empty to keep using <code>.env</code>. <strong>Send Test Email</strong> sends a real email and shows the mail server's error if it fails.</p>
+<figure><img src="assets/screenshots/configuration/08-settings-email.png" alt="SMTP settings" loading="lazy"><figcaption>Figure 7: SMTP settings in Admin &rarr; Settings.</figcaption></figure>
+
+<p>The reset link opens <code>/portal/reset-password</code>, where learners choose a new password. It works for both the portal and the mobile app.</p>
+<h4 id="local-testing">Local testing and demo mode</h4>
+<p>To try NexusLMS on your own computer:</p>
+<pre><code>cp .env.example .env
+composer install
+npm install &amp;&amp; npm run build
+php artisan key:generate
+php artisan serve</code></pre>
+<p>Create an empty database, open <code>http://127.0.0.1:8000/install</code> and tick <em>Import demo data</em> in step 3 to get sample courses and the <a href="#demo-credentials">demo accounts</a>. The installer switches the site to production mode; for local debugging set <code>APP_DEBUG=true</code> in <code>.env</code> afterwards. Set <code>DEMO_MODE=true</code> to show the demo accounts on the sign-in pages (only for a public demo site).</p>
+<h4 id="going-live">Going-live checklist</h4>
+<ul>
+  <li><code>APP_URL</code> is your <code>https://</code> address, <code>APP_ENV=production</code> and <code>APP_DEBUG=false</code> (the installer sets these).</li>
+  <li>Demo data is off, or the demo accounts are deleted or have new passwords; <code>DEMO_MODE</code> is off.</li>
+  <li>Email works: send a test from <strong>Admin &rarr; Settings &rarr; SMTP Email Server</strong>.</li>
+  <li>The cron entry is installed (<a href="#cron">Scheduler</a>).</li>
+  <li>Uploaded images load (run <code>php artisan storage:link</code> if not).</li>
+  <li>Your administrator account uses a strong, unique password.</li>
+  <li>Caches are built: <code>php artisan optimize</code>.</li>
+  <li>The mobile app's <code>API_BASE_URL</code> uses <code>https://</code>, and release builds are signed (<a href="#mobile-release">Release builds</a>).</li>
+  <li>Database and <code>storage</code> backups are scheduled.</li>
+</ul>
+<h4 id="update">Updating to a new version</h4>
+<ol>
+  <li>Back up your database and the <code>.env</code> file and <code>storage</code> folder.</li>
+  <li>Upload the new files, keeping your <code>.env</code> and <code>storage</code> folder.</li>
+  <li>Run:
+<pre><code>composer install --no-dev --optimize-autoloader
+npm ci &amp;&amp; npm run build
+php artisan migrate --force
+php artisan optimize:clear</code></pre></li>
+</ol>
+<h3 id="admin">Admin panel</h3>
+<p>Sign in at <code>/admin</code> with the administrator account you created in the installer.</p>
+<table>
+  <tr><th>Section</th><th>What you can do</th></tr>
+  <tr><td>Dashboard</td><td>See enrollment, completion and activity at a glance.</td></tr>
+  <tr><td>Courses</td><td>Create courses with modules and lessons (video, PDF, formatted text or external links), set completion rules, prerequisite gates, drip schedule and certificate expiry, and publish them. Video uploads (MP4, M4V, WebM, MOV up to 100 MB) or YouTube/Vimeo embeds stream with dynamic learner watermarks; PDF documents open in a secure viewer.</td></tr>
+  <tr><td>Quizzes</td><td>Build assessments with multiple-choice, true/false and short-answer questions, a time limit, a pass mark and an attempt limit. Short-answer questions are left out of the automatic score until an instructor marks them: open the quiz's attempts, click <em>Needs review</em>, award points and optional feedback. The score and pass result are then recalculated and the learner is notified.</td></tr>
+  <tr><td>Assignments</td><td>Add assignments to a course with allowed file types, a size limit and a deadline. Review and grade submissions; learners are notified.</td></tr>
+  <tr><td>Learning paths</td><td>Group courses into a path and assign it to people or whole departments.</td></tr>
+  <tr><td>Live classes</td><td>Schedule sessions with a meeting link (Zoom, Teams, Google Meet). Learners can join from 15 minutes before the start; a reminder is sent automatically. Add the recording link afterwards.</td></tr>
+  <tr><td>Certificates</td><td>Issue, revoke and verify certificates and edit certificate templates.</td></tr>
+  <tr><td>Departments and users</td><td>Manage departments, employees and their course assignments.</td></tr>
+  <tr><td>Roles</td><td>Tick the permissions each role has (for example <em>View users</em>, <em>Grade assignments</em>, <em>Edit settings</em>). Changes apply immediately. You can also create your own roles. Only a Super Admin can open this page. See <a href="#admin-access">Who can open what</a>.</td></tr>
+  <tr><td>Notifications</td><td>Send announcements to everyone, a department, a course or one person, and edit the emails the platform sends: account welcome, course assigned, course completed, certificate issued, live class invitation and due date reminder. Switch a template off to stop that email. <strong>Send Test Email</strong> emails the template to you with sample values.</td></tr>
+  <tr><td>Reports</td><td>Track compliance and course progress, export reports, and send a reminder to a learner with one click. Learners also get automatic reminders 14, 7 and 1 days before a due date, and before a certificate expires.</td></tr>
+  <tr><td>Settings</td><td>Site and company name, logo and favicon, email (SMTP), Firebase push, time zone, session timeout and due date reminders, and the privacy policy and help desk details.</td></tr>
+</table>
+<figure><img src="assets/screenshots/configuration/01-dashboard.png" alt="The admin dashboard." loading="lazy"><figcaption>Figure 8: The admin dashboard.</figcaption></figure>
+<figure><img src="assets/screenshots/configuration/02-courses.png" alt="Course list" loading="lazy"><figcaption>Figure 9: Courses &amp; Curricula: every course with its status.</figcaption></figure>
+<figure><img src="assets/screenshots/configuration/03-curriculum-builder.png" alt="The curriculum builder: modules and lessons for one course." loading="lazy"><figcaption>Figure 10: The curriculum builder: modules and lessons for one course.</figcaption></figure>
+<figure><img src="assets/screenshots/configuration/04-quiz-builder.png" alt="The quiz builder: questions, options and the correct answers." loading="lazy"><figcaption>Figure 11: The quiz builder: questions, options and the correct answers.</figcaption></figure>
+<figure><img src="assets/screenshots/configuration/05-assignment-grading.png" alt="Assignment submissions, ready for grading." loading="lazy"><figcaption>Figure 12: Assignment submissions, ready for grading.</figcaption></figure>
+<figure><img src="assets/screenshots/configuration/06-reports.png" alt="Reports" loading="lazy"><figcaption>Figure 13: Compliance &amp; Reports, with export.</figcaption></figure>
+<h4 id="admin-settings">Settings</h4>
+<p>Open <strong>Admin &rarr; Settings</strong> to set up the platform. Each tab is shown below.</p>
+<figure><img src="assets/screenshots/configuration/07-settings-general.png" alt="General settings" loading="lazy"><figcaption>Figure 14: General &amp; Branding: site name, company, logo and favicon.</figcaption></figure>
+<figure><img src="assets/screenshots/configuration/10-settings-localization.png" alt="Time zone setting" loading="lazy"><figcaption>Figure 15: Time Zone: the time zone used for dates and times across the platform.</figcaption></figure>
+<figure><img src="assets/screenshots/configuration/09-settings-firebase.png" alt="Firebase settings" loading="lazy"><figcaption>Figure 16: Firebase &amp; Push: optional push notifications (see Push notifications).</figcaption></figure>
+<figure><img src="assets/screenshots/configuration/11-settings-security.png" alt="Security settings" loading="lazy"><figcaption>Figure 17: Security &amp; Compliance: session timeout, automatic due date reminders and a server summary.</figcaption></figure>
+<figure><img src="assets/screenshots/configuration/12-settings-support.png" alt="Privacy and support settings" loading="lazy"><figcaption>Figure 18: Privacy &amp; Support: IT Help Desk contacts and the privacy policy.</figcaption></figure>
+<p><strong>Privacy &amp; Support</strong> holds the IT Help Desk details (email, phone, help center link and support hours) and your privacy policy. In the mobile app, <strong>IT Help Desk</strong> on the sign-in screen lists the contacts you fill in, and <strong>Privacy Policy</strong> opens the policy inside the app. The policy is also published at <code>https://your-domain.com/privacy-policy</code>, which you can use as the privacy policy link in the App Store and Google Play. Until you write your own, a starter policy is shown; it fills in your company name automatically. You can paste plain text or simple HTML (headings, paragraphs, lists and links).</p>
+
+<h4 id="admin-access">Who can open what</h4>
+<p>Each admin page needs a permission, and each role holds a set of permissions that you can change under <strong>Admin &rarr; Roles &amp; Permissions</strong>. A Super Admin always has every permission. The defaults are:</p>
+<table>
+  <tr><th>Role</th><th>Default access</th></tr>
+  <tr><td>Super Admin</td><td>Everything, including Roles &amp; Permissions.</td></tr>
+  <tr><td>Company Admin</td><td>Everything except Roles &amp; Permissions. Cannot create, edit or delete Super Admin accounts.</td></tr>
+  <tr><td>Manager</td><td>View users, manage departments, view courses and assign them, learning paths, view certificates and live classes, reports (view, export, reminders) and announcements.</td></tr>
+  <tr><td>Instructor</td><td>Create and edit courses, quizzes (including short-answer review), grade assignments, host live classes and take attendance, view reports.</td></tr>
+  <tr><td>Employee</td><td>The learner portal and mobile app only, and only the courses they are enrolled in (or courses that allow self-enrollment).</td></tr>
+</table>
+<p>A role you create yourself can open the admin panel as soon as it has at least one permission. Giving permissions to the <em>Employee</em> role lets every learner into the admin panel, so leave it empty.</p>
+<p>Lesson files and assignment submissions are stored privately in <code>storage/app/private</code>. Learners reach them only through authenticated stream and download routes that verify active course enrollment on every request.</p>
+<h4 id="admin-first-steps">First-time setup</h4>
+<ol>
+  <li><strong>Settings &rarr; General &amp; Branding:</strong> site and company name, logo and favicon.</li>
+  <li><strong>Settings &rarr; Time Zone:</strong> choose your time zone before you schedule live classes or set due dates.</li>
+  <li><strong>Settings &rarr; SMTP Email Server:</strong> mail settings, then send a test email.</li>
+  <li><strong>Departments</strong>, then <strong>Users:</strong> add people one by one or import a CSV file (download the sample from the Users page). Each imported person is emailed a link to choose their own password, so set up email first; anyone who misses it can use <em>Forgot password</em> on the sign-in page.</li>
+  <li><strong>Courses:</strong> create a course, add modules and lessons, add quizzes and assignments, publish it and assign it to departments or people.</li>
+</ol>
+<h3 id="demo-credentials">Demo credentials</h3>
+<p>Demo accounts exist only if you tick <em>Import demo data</em> in the installer. The administrator you create in the installer is separate and uses your own password.</p>
+<table>
+  <tr><th>Account</th><th>Signs in at</th><th>Email</th></tr>
+  <tr><td>Super Admin</td><td><code>/admin</code></td><td><code>admin@nexuslms.internal</code></td></tr>
+  <tr><td>Company Admin</td><td><code>/admin</code></td><td><code>admin@corporation.com</code></td></tr>
+  <tr><td>Manager</td><td><code>/admin</code></td><td><code>manager@corporation.com</code></td></tr>
+  <tr><td>Instructor</td><td><code>/admin</code></td><td><code>instructor@corporation.com</code></td></tr>
+  <tr><td>Learner</td><td><code>/portal</code> and the app</td><td><code>employee@corporation.com</code></td></tr>
+</table>
+<p>To try them, set <code>DEMO_MODE=true</code> in <code>.env</code>: the admin sign-in page then offers the Super Admin and Company Admin accounts, and the portal sign-in page the Learner account, with their passwords filled in. The Manager and Instructor accounts use the same password as the Learner.</p>
+<div class="warn">On a live site, leave <code>DEMO_MODE</code> off and delete the demo accounts or give them new passwords under <strong>Admin &rarr; Users</strong>.</div>
+<h3 id="white-labeling">White-labeling</h3>
+<ul>
+  <li><strong>Name, logo and favicon:</strong> <strong>Admin &rarr; Settings &rarr; General &amp; Branding</strong>. An uploaded logo (square works best) replaces the built-in one in the admin panel, the portal and the sign-in pages. The built-in logo is <code>public/assets/images/brand/logo.svg</code> (see <a href="#mobile-branding">Icon, colors and font</a>).</li>
+  <li><strong>Emails:</strong> edit the subject and text of each automatic email under <strong>Admin &rarr; Notifications</strong>.</li>
+  <li><strong>Certificates:</strong> logo, signature and wording under <strong>Admin &rarr; Certificates &rarr; Template Designer &amp; Settings</strong>.</li>
+  <li><strong>Time zone:</strong> <strong>Settings &rarr; Time Zone</strong>.</li>
+  <li><strong>Mobile app:</strong> name, package, icon, colors and font are set in the app's source; see <a href="#mobile-rename">Rename the app and package</a> and <a href="#mobile-branding">Icon, colors and font</a>.</li>
+</ul>
+<h3 id="portal">Learner portal</h3>
+<p>Employees sign in at <code>/portal</code> to see their assigned courses, continue lessons, take quizzes, submit assignments, join live classes, and view and print certificates. The site root (<code>/</code>) opens the portal.</p>
+<figure><img src="assets/screenshots/portal/01-dashboard.png" alt="The learner portal dashboard." loading="lazy"><figcaption>Figure 19: The learner portal dashboard.</figcaption></figure>
+<figure><img src="assets/screenshots/portal/02-course-overview.png" alt="Course overview" loading="lazy"><figcaption>Figure 20: A course in the portal: progress, curriculum, quizzes and assignments.</figcaption></figure>
+<figure><img src="assets/screenshots/portal/04-course-player.png" alt="Course player" loading="lazy"><figcaption>Figure 21: The course player, showing a text lesson with the curriculum alongside.</figcaption></figure>
+<figure><img src="assets/screenshots/portal/03-forgot-password.png" alt="Forgot password" loading="lazy"><figcaption>Figure 22: Learners can reset a forgotten password from the sign-in page.</figcaption></figure>
+<h3 id="architecture">Architecture</h3>
+<table>
+  <tr><th>Path</th><th>Purpose</th></tr>
+  <tr><td><code>app/Http/Controllers/Admin</code></td><td>Admin panel pages.</td></tr>
+  <tr><td><code>app/Http/Controllers/Portal</code></td><td>Learner web portal.</td></tr>
+  <tr><td><code>app/Http/Controllers/Api/V1</code></td><td>REST API used by the mobile app.</td></tr>
+  <tr><td><code>app/Http/Controllers/InstallController.php</code>, <code>app/Services/InstallService.php</code></td><td>Web installer.</td></tr>
+  <tr><td><code>app/Http/Middleware</code></td><td>Admin access, the permission each admin page needs (<code>AdminPermission</code>), and the installer lock.</td></tr>
+  <tr><td><code>app/Models</code></td><td>Database models.</td></tr>
+  <tr><td><code>app/Services</code></td><td>Course progress, notifications and push (<code>LearnerNotifier</code>, <code>FirebaseService</code>), short-answer review (<code>QuizAttemptReviewer</code>) and safe lesson text (<code>RichText</code>).</td></tr>
+  <tr><td><code>app/Console/Commands</code></td><td>Live class reminders, due date and certificate expiry reminders, and cleanup of replaced assignment files.</td></tr>
+  <tr><td><code>database/migrations</code>, <code>database/seeders</code></td><td>Tables, default roles, permissions and email templates; demo data.</td></tr>
+  <tr><td><code>resources/views/admin</code>, <code>portal</code>, <code>install</code></td><td>Blade templates.</td></tr>
+  <tr><td><code>routes/web.php</code>, <code>routes/api.php</code>, <code>routes/console.php</code></td><td>Web pages, API and scheduled tasks.</td></tr>
+  <tr><td><code>storage/app/private</code></td><td>Lesson files and assignment submissions (not publicly reachable).</td></tr>
+</table>
+<h4 id="architecture-decisions">Key design decisions</h4>
+<ul>
+  <li>One <code>users</code> table for admins and learners; what each person can do comes from their role and its permissions (<a href="https://spatie.be/docs/laravel-permission">spatie/laravel-permission</a>). A Super Admin always has every permission.</li>
+  <li>Every admin page is mapped to a permission in one place, and a test fails if a new page is added without one.</li>
+  <li>Learners only reach courses, lessons, quizzes, assignments and live classes they are enrolled in or invited to; the API and the portal share the same checks.</li>
+  <li>Lesson files and submissions are stored privately; media stream and download endpoints verify authentication and active enrollment on every request.</li>
+  <li>The mobile app signs in with Laravel Sanctum tokens.</li>
+  <li>Push notifications and emails are sent right after each request finishes, so no queue worker is needed.</li>
+  <li>Lesson text written by admins is cleaned before it is shown, so scripts cannot run.</li>
+</ul>
+<h3 id="api">API</h3>
+<p>The mobile app uses the API at <code>https://your-domain.com/api/v1</code>. Learners sign in with <code>POST /api/v1/auth/login</code> and receive a bearer token, which is sent as <code>Authorization: Bearer &lt;token&gt;</code> on every other request. Sign-in and password reset requests are rate limited.</p>
+<p>Signed-in requests are limited to 120 per minute; sign-in to 5 attempts per minute.</p>
+<table>
+  <tr><th>Area</th><th>Endpoints (all under <code>/api/v1/</code>)</th></tr>
+  <tr><td>Sign-in and account</td><td><code>POST auth/login</code>, <code>auth/logout</code>, <code>auth/forgot-password</code>, <code>auth/reset-password</code>, <code>GET auth/me</code></td></tr>
+  <tr><td>Home</td><td><code>GET dashboard</code>, <code>GET system/config</code></td></tr>
+  <tr><td>Courses and lessons</td><td><code>GET courses</code>, <code>courses/{slug}</code>, <code>courses/{slug}/lessons/{id}</code>, <code>…/stream</code>, <code>POST …/complete</code></td></tr>
+  <tr><td>Learning paths</td><td><code>GET learning-paths</code>, <code>learning-paths/{slug}</code></td></tr>
+  <tr><td>Quizzes</td><td><code>GET quizzes/{id}</code>, <code>POST quizzes/{id}/start</code>, <code>quizzes/{id}/submit</code>, <code>GET quizzes/{id}/attempts/{attempt}</code></td></tr>
+  <tr><td>Assignments</td><td><code>GET assignments</code>, <code>assignments/{id}</code>, <code>POST assignments/{id}/submit</code> (file upload)</td></tr>
+  <tr><td>Live classes</td><td><code>GET live-classes</code>, <code>POST live-classes/{id}/join</code></td></tr>
+  <tr><td>Certificates</td><td><code>GET certificates</code>, <code>certificates/{number}</code></td></tr>
+  <tr><td>Notifications</td><td><code>GET notifications</code>, <code>POST notifications/{id}/read</code>, <code>notifications/read-all</code>, <code>POST device-token</code></td></tr>
+  <tr><td>Profile</td><td><code>GET profile</code>, <code>POST profile</code> (photo), <code>POST profile/change-password</code></td></tr>
+</table>
+<h3 id="tests">Tests</h3>
+<p>The backend has 303 automated tests. They run on an in-memory SQLite database, so no MySQL is needed (PHP's <code>pdo_sqlite</code> extension must be enabled):</p>
+<pre><code>php artisan test</code></pre>
+<p>They cover the installer, sign-in and password reset, roles and permissions, enrollment checks, courses and lessons, quizzes and short-answer review, assignments, live classes, certificates, notifications and push, and the API.</p>
+<p>The mobile app has 177 tests, including an architecture test that keeps the code layered:</p>
+<pre><code>flutter analyze
+flutter test</code></pre>
+
+
+<h2 id="mobile-setup"><span class="hi" aria-hidden="true">📱</span>Mobile app: setup and running</h2>
+<ol>
+  <li>Open <code>main/mobile</code> in Android Studio or VS Code.</li>
+  <li>Create your settings file from the example and set your API address:
+<pre><code>cp assets/.env.example assets/.env</code></pre>
+<pre><code>API_BASE_URL=https://your-domain.com/api/v1</code></pre>
+  If <code>assets/.env</code> is missing, the app uses the values in <code>assets/.env.example</code>. Out of the box that points to the live demo server (<code>https://nexuslms.dev-shamim.com/api/v1</code>), so you can run the app and sign in with a demo learner account before you set up your own server.
+  <p>Set <code>API_BASE_URL</code> to your server's address followed by <code>/api/v1</code>:</p>
+  <ul>
+    <li>Live server: <code>https://your-domain.com/api/v1</code> (use HTTPS; Android blocks plain HTTP in release builds).</li>
+    <li>Android emulator with a server on your computer: <code>http://10.0.2.2:8000/api/v1</code>.</li>
+    <li>iOS simulator with a server on your computer: <code>http://127.0.0.1:8000/api/v1</code>.</li>
+  </ul>
+  <p>After changing it, stop the app and run it again; a hot reload does not pick up <code>.env</code> changes.</p>
+  <figure><img src="assets/screenshots/mobile-setup/00-api-base-url.png" alt="API_BASE_URL in assets/.env.example in Android Studio" loading="lazy"><figcaption>Figure 23: The API address is the <code>API_BASE_URL</code> line in the <code>assets</code> folder's <code>.env</code> file.</figcaption></figure></li>
+  <li>Install packages and run:
+<pre><code>flutter pub get
+flutter run</code></pre></li>
+</ol>
+<h3 id="mobile-setup-what-the-app-looks-like">What the app looks like</h3>
+<div class="phones">
+  <figure><img src="assets/screenshots/mobile/01-login.png" alt="Sign in with a learner account." loading="lazy"><figcaption>Figure 24: Sign in with a learner account.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/02-dashboard.png" alt="Home: progress, live classes and assigned courses." loading="lazy"><figcaption>Figure 25: Home: progress, live classes and assigned courses.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/03-course-details.png" alt="Course details and progress." loading="lazy"><figcaption>Figure 26: Course details and progress.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/04-certificates.png" alt="Certificates, with a public verification link." loading="lazy"><figcaption>Figure 27: Certificates, with a public verification link.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/05-live-classes.png" alt="Live classes and past recordings." loading="lazy"><figcaption>Figure 28: Live classes and past recordings.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/06-notifications.png" alt="Notifications, grouped by day." loading="lazy"><figcaption>Figure 29: Notifications, grouped by day.</figcaption></figure>
+</div>
+
+<h3 id="mobile-setup-testing-on-a-real-phone">Testing on a real phone</h3>
+<p>On a phone on the same Wi-Fi as your computer, use your computer's network address, for example <code>http://192.0.2.10:8000/api/v1</code>, and start Laravel with <code>php artisan serve --host=0.0.0.0</code>. Plain <code>http://</code> works only in debug builds; release builds need <code>https://</code>.</p>
+
+<h3 id="mobile-setup-file-structure">File structure</h3>
+<p>The app in <code>main/mobile</code> is organized by feature. Each feature has the same three layers, so once you know one feature you can find your way around all of them.</p>
+<table>
+  <tr><th>Path</th><th>Purpose</th></tr>
+  <tr><td><code>lib/main.dart</code></td><td>Starts the app: loads <code>assets/.env</code>, sets up Firebase when it is configured, and runs <code>app.dart</code>.</td></tr>
+  <tr><td><code>lib/app.dart</code></td><td>The root widget: theme, the list of screens (routes) and the bindings that create each screen's controller.</td></tr>
+  <tr><td><code>lib/core/config</code></td><td><code>env.dart</code> reads <code>API_BASE_URL</code> from <code>assets/.env</code>.</td></tr>
+  <tr><td><code>lib/core/constants</code></td><td>Colors (<code>app_colors.dart</code>), text styles, spacing, corner radius, shadows, image and icon paths, route names and shared text.</td></tr>
+  <tr><td><code>lib/core/theme</code></td><td><code>app_theme.dart</code>: the light and dark themes built from the constants.</td></tr>
+  <tr><td><code>lib/core/network</code></td><td>The API client (<code>api_client.dart</code>), the list of API addresses (<code>api_endpoints.dart</code>) and the response format.</td></tr>
+  <tr><td><code>lib/core/services</code></td><td>Sign-in token storage, saved preferences, push notifications, file picking, sharing, opening links and the video player.</td></tr>
+  <tr><td><code>lib/core/error</code></td><td>Turns network and server errors into the messages people see.</td></tr>
+  <tr><td><code>lib/core/ui</code>, <code>lib/core/utils</code></td><td>Navigation and snackbar helpers, and safe reading of JSON values.</td></tr>
+  <tr><td><code>lib/shared/widgets</code></td><td>Widgets used on many screens: cards, buttons, search field, logo, icons, and the loading, empty and error views.</td></tr>
+  <tr><td><code>lib/features/&lt;feature&gt;</code></td><td>One folder per part of the app: <code>auth</code>, <code>splash</code>, <code>home</code>, <code>dashboard</code>, <code>courses</code>, <code>player</code>, <code>quiz</code>, <code>assignments</code>, <code>certificates</code>, <code>live_classes</code>, <code>notifications</code>, <code>profile</code> and <code>support</code>.</td></tr>
+  <tr><td><code>&hellip;/&lt;feature&gt;/data</code></td><td><code>datasources</code> call the API, <code>models</code> read its JSON, and <code>repositories</code> combine them for the rest of the feature.</td></tr>
+  <tr><td><code>&hellip;/&lt;feature&gt;/domain</code></td><td><code>entities</code> (the plain data the screens use), the repository interfaces, and logic such as filtering and progress.</td></tr>
+  <tr><td><code>&hellip;/&lt;feature&gt;/presentation</code></td><td><code>bindings</code> (create the controller), <code>controllers</code> (GetX state), <code>screens</code>, <code>widgets</code>, and the screen's text in a <code>*_strings.dart</code> file.</td></tr>
+  <tr><td><code>assets</code></td><td><code>.env.example</code> (API address), <code>app_icon</code> (launcher icon source), <code>fonts/inter</code> (Inter with its license) and <code>icons</code> (SVG icons).</td></tr>
+  <tr><td><code>android</code>, <code>ios</code></td><td>Platform projects: app name, package name and bundle ID, launcher icons, permissions and signing.</td></tr>
+  <tr><td><code>test</code></td><td>177 tests, laid out like <code>lib</code>, plus <code>architecture_test.dart</code>, which checks that the layers above stay separate.</td></tr>
+</table>
+<p>To add a screen, copy the layout of an existing feature: add its route name in <code>lib/core/constants/app_routes.dart</code> and register the screen and its binding in <code>lib/app.dart</code>.</p>
+
+<h2 id="mobile-rename"><span class="hi" aria-hidden="true">✏️</span>Rename the app and package</h2>
+<h3 id="mobile-rename-app-name">App name</h3>
+<ul>
+  <li>Android: change <code>android:label</code> in <code>android/app/src/main/AndroidManifest.xml</code>.
+    <figure><img src="assets/screenshots/mobile-setup/01-android-app-name.png" alt="Android app name in AndroidManifest.xml" loading="lazy"><figcaption>Figure 30: The Android app name is the <code>android:label</code> value in <code>AndroidManifest.xml</code>.</figcaption></figure></li>
+  <li>iOS: open <code>ios/Runner.xcworkspace</code> in Xcode, select the <em>Runner</em> target and set <em>Display Name</em> on the <em>General</em> tab (this writes <code>CFBundleDisplayName</code> in <code>ios/Runner/Info.plist</code>).</li>
+</ul>
+<h3 id="mobile-rename-package-name-android-and-bundle-id-ios">Package name (Android) and bundle ID (iOS)</h3>
+<ul>
+  <li>Android: change <code>applicationId</code> and <code>namespace</code> in <code>android/app/build.gradle.kts</code>, then move <code>MainActivity.kt</code> to the matching folder under <code>android/app/src/main/kotlin/</code> and update its <code>package</code> line.
+    <figure><img src="assets/screenshots/mobile-setup/02-android-package-name.png" alt="Android applicationId in build.gradle.kts" loading="lazy"><figcaption>Figure 31: The Android package name is <code>applicationId</code> in <code>android/app/build.gradle.kts</code>.</figcaption></figure></li>
+  <li>iOS: in Xcode, select the <em>Runner</em> target and change <em>Bundle Identifier</em> under <em>General &rarr; Identity</em>. Choose your team under <em>Signing &amp; Capabilities</em>.
+    <figure><img src="assets/screenshots/mobile-setup/03-ios-bundle-id.png" alt="Xcode Identity settings" loading="lazy"><figcaption>Figure 32: Display Name, Bundle Identifier and version in Xcode, under Runner &rarr; General &rarr; Identity.</figcaption></figure></li>
+</ul>
+
+<h2 id="mobile-branding"><span class="hi" aria-hidden="true">🎨</span>Icon, colors and font</h2>
+<ul>
+  <li><strong>App icon:</strong> replace <code>assets/app_icon/icon.png</code> (1024&times;1024, no transparency) and <code>assets/app_icon/icon_foreground.png</code> (the Android adaptive icon foreground, with transparent padding), then run <code>dart run flutter_launcher_icons</code>.</li>
+  <li><strong>Colors:</strong> edit <code>lib/core/constants/app_colors.dart</code>.</li>
+  <li><strong>Web logo:</strong> the admin panel, portal, installer and certificates use the same logo as the app unless you upload your own in <strong>Admin &rarr; Settings</strong>. To change the built-in one, replace <code>backend/public/assets/images/brand/logo.svg</code> (and <code>favicon-32.png</code> and <code>apple-touch-icon.png</code> in the same folder, plus <code>public/favicon.ico</code>). A favicon uploaded in <strong>Admin &rarr; Settings</strong> takes priority in the browser tab.</li>
+  <li><strong>Font:</strong> the app bundles Inter in <code>assets/fonts/inter</code>. To use another font, add its files there, update the <code>fonts</code> section of <code>pubspec.yaml</code>, and change <code>fontFamily</code> in <code>lib/core/constants/app_text_styles.dart</code>.</li>
+</ul>
+
+<h2 id="mobile-release"><span class="hi" aria-hidden="true">🚀</span>Release builds and signing</h2>
+<h3 id="mobile-release-android">Android</h3>
+<ol>
+  <li>Create an upload key (keep this file and its passwords safe):
+<pre><code>keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload</code></pre></li>
+  <li>Create <code>android/key.properties</code>:
+<pre><code>storePassword=your-store-password
+keyPassword=your-key-password
+keyAlias=upload
+storeFile=/path/to/upload-keystore.jks</code></pre>
+  <code>storeFile</code> is the full path to the keystore you created. On Windows, use forward slashes, for example <code>C:/keys/upload-keystore.jks</code>. Never commit <code>key.properties</code> or the keystore; both are already in <code>android/.gitignore</code>.
+  <p>You don't need to edit any Gradle file. <code>android/app/build.gradle.kts</code> already reads <code>key.properties</code> and signs release builds with it. Without the file, release builds fall back to the debug key, which Google Play does not accept.</p>
+  <figure><img src="assets/screenshots/mobile-setup/04-android-release-signing.png" alt="Release signing in android/app/build.gradle.kts" loading="lazy"><figcaption>Figure 33: <code>signingConfigs</code> reads <code>key.properties</code>; the <code>release</code> build type uses it.</figcaption></figure></li>
+  <li>Build the app bundle for Google Play:
+<pre><code>flutter build appbundle --release</code></pre></li>
+</ol>
+<h3 id="mobile-release-ios">iOS</h3>
+<ol>
+  <li>Open <code>ios/Runner.xcworkspace</code> in Xcode, select the <em>Runner</em> target, and under <em>Signing &amp; Capabilities</em> choose your own team and bundle ID.</li>
+  <li>Push notifications need the <em>Push Notifications</em> capability, which requires a paid Apple Developer account. On a free personal team, remove <code>Runner.entitlements</code> from the target to build without push.</li>
+  <li>Build the archive for App Store Connect:
+<pre><code>flutter build ipa --release</code></pre></li>
+</ol>
+
+<h2 id="push"><span class="hi" aria-hidden="true">🔔</span>Push notifications (optional)</h2>
+<p>NexusLMS works without Firebase. Learners still see every notification in the app's notification list; Firebase adds pushes to the phone's lock screen.</p>
+<h3 id="push-1-create-a-firebase-project">1. Create a Firebase project</h3>
+<ol>
+  <li>Create a project in the <a href="https://console.firebase.google.com/">Firebase console</a>.
+    <figure><img src="assets/screenshots/firebase/01-create-project.png" alt="Create a Firebase project" loading="lazy"><figcaption>Figure 34: Create a Firebase project and give it a name.</figcaption></figure></li>
+  <li>Add an Android app with your package name (the same <code>applicationId</code> as above) and click <em>Register app</em>.
+    <figure><img src="assets/screenshots/firebase/02-add-android-app.png" alt="Add Firebase to the Android app" loading="lazy"><figcaption>Figure 35: Register the Android app with your package name.</figcaption></figure></li>
+  <li>Download <code>google-services.json</code> and put it in <code>mobile/android/app/</code>, next to <code>build.gradle.kts</code>.
+    <figure><img src="assets/screenshots/firebase/03-android-google-services-json.png" alt="google-services.json location" loading="lazy"><figcaption>Figure 36: <code>google-services.json</code> goes in <code>mobile/android/app/</code>.</figcaption></figure></li>
+  <li>Add an Apple app with your bundle ID, then download <code>GoogleService-Info.plist</code> into <code>mobile/ios/Runner/</code>.
+    <figure><img src="assets/screenshots/firebase/04-add-apple-app.png" alt="Add Firebase to the Apple app" loading="lazy"><figcaption>Figure 37: Register the Apple app with your bundle ID.</figcaption></figure></li>
+  <li>For iOS, open <em>Project settings &rarr; Cloud Messaging</em>, select your Apple app and upload an APNs authentication key (.p8) from your Apple Developer account.
+    <figure><img src="assets/screenshots/firebase/05-cloud-messaging.png" alt="Firebase Cloud Messaging settings" loading="lazy"><figcaption>Figure 38: Cloud Messaging settings: select the Apple app.</figcaption></figure>
+    <figure><img src="assets/screenshots/firebase/06-apns-auth-key.png" alt="Upload APNs authentication key" loading="lazy"><figcaption>Figure 39: Upload the APNs authentication key (development and production).</figcaption></figure></li>
+</ol>
+<p>The build picks these files up automatically. Without them, the app builds and runs with push turned off.</p>
+<h3 id="push-2-connect-the-server">2. Connect the server</h3>
+<ol>
+  <li>In the Firebase console, open <em>Project settings &rarr; Service accounts</em> and click <em>Generate new private key</em> (a JSON file). Keep this file private.
+    <figure><img src="assets/screenshots/firebase/07-service-account-key.png" alt="Generate a Firebase service account key" loading="lazy"><figcaption>Figure 40: Generate the service-account key that the server uses to send pushes.</figcaption></figure></li>
+  <li>In <strong>Admin &rarr; Settings &rarr; Firebase</strong>, enable push, upload or paste that JSON file, and choose which events send a push: course assignment, assignment grading, certificates and live class reminders.</li>
+</ol>
+
+<h2 id="connections"><span class="hi" aria-hidden="true">🌐</span>External services</h2>
+<table>
+  <tr><th>Service</th><th>When it is contacted</th></tr>
+  <tr><td><a href="https://firebase.google.com/docs/cloud-messaging">Firebase Cloud Messaging</a> (fcm.googleapis.com, oauth2.googleapis.com)</td><td>Only when push notifications are configured.</td></tr>
+  <tr><td>Your mail server (SMTP)</td><td>Password reset and email notifications.</td></tr>
+  <tr><td>YouTube (youtube-nocookie.com) and Vimeo (player.vimeo.com)</td><td>When a learner opens a video lesson hosted there. Uploaded video files are served by your own server.</td></tr>
+  <tr><td>Meeting and video links</td><td>Live class links (Zoom, Teams, Google Meet) and recordings open the provider's site or app.</td></tr>
+</table>
+
+<h2 id="troubleshooting"><span class="hi" aria-hidden="true">🧰</span>Troubleshooting</h2>
+<table>
+  <tr><th>Problem</th><th>Solution</th></tr>
+  <tr><td>Blank page or "500 Server Error"</td><td>Check <code>storage/logs/laravel.log</code>. Make sure <code>storage</code> and <code>bootstrap/cache</code> are writable and that <code>composer install</code> finished.</td></tr>
+  <tr><td>Styles are missing</td><td>Run <code>npm ci &amp;&amp; npm run build</code> so that <code>public/build</code> exists.</td></tr>
+  <tr><td>Uploaded images or files return 404</td><td>Run <code>php artisan storage:link</code>. If your host does not allow symbolic links, ask your hosting provider to enable them.</td></tr>
+  <tr><td>Password reset emails do not arrive</td><td>Check the <a href="#email">email settings</a> and your mail provider's logs.</td></tr>
+  <tr><td>"Too many attempts"</td><td>Sign-in allows 5 attempts per minute for each email address and network address. Wait a minute and try again.</td></tr>
+  <tr><td>The app cannot reach the server</td><td>Check <code>API_BASE_URL</code> in <code>assets/.env</code>. Release builds need <code>https://</code>.</td></tr>
+  <tr><td>No push notifications</td><td>Check the Firebase files, the service-account key in Admin &rarr; Settings, the event switches, and (iOS) the APNs key. Push does not work on the iOS simulator without APNs.</td></tr>
+  <tr><td>Live class or due date reminders are not sent</td><td>Make sure the <a href="#cron">cron entry</a> is installed. Due date reminders also need the switch under <strong>Settings &rarr; Security &amp; Compliance</strong>.</td></tr>
+</table>
+
+<h2 id="credits"><span class="hi" aria-hidden="true">📜</span>Credits and licenses</h2>
+<h3 id="credits-server">Server</h3>
+<table>
+  <tr><th>Package</th><th>Version</th><th>License</th></tr>
+  <tr><td><a href="https://laravel.com">Laravel Framework</a></td><td>13.40</td><td>MIT</td></tr>
+  <tr><td><a href="https://laravel.com/docs/sanctum">Laravel Sanctum</a></td><td>4.3</td><td>MIT</td></tr>
+  <tr><td><a href="https://github.com/laravel/tinker">Laravel Tinker</a></td><td>3.0</td><td>MIT</td></tr>
+  <tr><td><a href="https://spatie.be/docs/laravel-permission">spatie/laravel-permission</a></td><td>8.5</td><td>MIT</td></tr>
+  <tr><td><a href="https://alpinejs.dev">Alpine.js</a></td><td>3.17</td><td>MIT</td></tr>
+  <tr><td><a href="https://tailwindcss.com">Tailwind CSS</a></td><td>4.3</td><td>MIT</td></tr>
+  <tr><td><a href="https://vite.dev">Vite</a> and laravel-vite-plugin</td><td>8.3 / 3.2</td><td>MIT</td></tr>
+  <tr><td>Fonts Inter, Playfair Display, Cinzel, Great Vibes and JetBrains Mono (bundled in <code>public/fonts</code>, licenses in the <code>OFL-*.txt</code> files there)</td><td>&ndash;</td><td>SIL Open Font License 1.1</td></tr>
+</table>
+<h3 id="credits-mobile-app">Mobile app</h3>
+<table>
+  <tr><th>Package</th><th>Version</th><th>License</th></tr>
+  <tr><td><a href="https://flutter.dev">Flutter</a></td><td>3.44</td><td>BSD-3-Clause</td></tr>
+  <tr><td><a href="https://pub.dev/packages/get">get</a></td><td>4.7.3</td><td>MIT</td></tr>
+  <tr><td><a href="https://pub.dev/packages/dio">dio</a></td><td>5.11.1</td><td>MIT</td></tr>
+  <tr><td><a href="https://pub.dev/packages/cached_network_image">cached_network_image</a></td><td>4.0.3</td><td>MIT</td></tr>
+  <tr><td><a href="https://pub.dev/packages/file_picker">file_picker</a></td><td>13.3.2</td><td>MIT</td></tr>
+  <tr><td><a href="https://pub.dev/packages/firebase_core">firebase_core</a></td><td>5.1.0</td><td>BSD-3-Clause</td></tr>
+  <tr><td><a href="https://pub.dev/packages/firebase_messaging">firebase_messaging</a></td><td>17.0.1</td><td>BSD-3-Clause</td></tr>
+  <tr><td><a href="https://pub.dev/packages/flutter_dotenv">flutter_dotenv</a></td><td>6.0.1</td><td>MIT</td></tr>
+  <tr><td><a href="https://pub.dev/packages/flutter_secure_storage">flutter_secure_storage</a></td><td>11.2.0</td><td>BSD-3-Clause</td></tr>
+  <tr><td><a href="https://pub.dev/packages/flutter_svg">flutter_svg</a></td><td>2.3.2</td><td>MIT</td></tr>
+  <tr><td><a href="https://pub.dev/packages/flutter_widget_from_html_core">flutter_widget_from_html_core</a></td><td>0.17.4</td><td>MIT</td></tr>
+  <tr><td><a href="https://pub.dev/packages/intl">intl</a></td><td>0.20.2</td><td>BSD-3-Clause</td></tr>
+  <tr><td><a href="https://pub.dev/packages/share_plus">share_plus</a></td><td>13.3.1</td><td>BSD-3-Clause</td></tr>
+  <tr><td><a href="https://pub.dev/packages/shared_preferences">shared_preferences</a></td><td>2.5.6</td><td>BSD-3-Clause</td></tr>
+  <tr><td><a href="https://pub.dev/packages/url_launcher">url_launcher</a></td><td>6.3.3</td><td>BSD-3-Clause</td></tr>
+  <tr><td><a href="https://pub.dev/packages/video_player">video_player</a></td><td>2.14.1</td><td>BSD-3-Clause</td></tr>
+  <tr><td><a href="https://pub.dev/packages/webview_flutter">webview_flutter</a></td><td>4.14.1</td><td>BSD-3-Clause</td></tr>
+  <tr><td><a href="https://rsms.me/inter/">Inter</a> font (bundled, license in <code>assets/fonts/inter/OFL.txt</code>)</td><td>4.1</td><td>SIL Open Font License 1.1</td></tr>
+  <tr><td><a href="https://fonts.google.com/icons">Material Symbols</a> icons by Google (SVG files in <code>assets/icons</code>, license in <code>assets/icons/LICENSE-material-symbols.txt</code>)</td><td>&ndash;</td><td>Apache License 2.0</td></tr>
+</table>
+
+<h2 id="changelog"><span class="hi" aria-hidden="true">📝</span>Changelog</h2>
+<h3 id="changelog-1-0-0">1.0.0</h3>
+<ul><li>Initial release.</li></ul>
+</div>
+</main>
+<a href="#top" class="to-top" aria-label="Back to top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></a>
+<script>
+(function () {
+  var groups = document.querySelectorAll('.nav-group');
+  function setOpen(group, open) {
+    group.classList.toggle('open', open);
+    var b = group.querySelector('.nav-expand');
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  groups.forEach(function (g) {
+    var b = g.querySelector('.nav-expand');
+    if (b) b.addEventListener('click', function () { setOpen(g, !g.classList.contains('open')); });
+  });
+  var toggle = document.getElementById('nav-toggle');
+  document.querySelectorAll('.sidebar nav a').forEach(function (a) {
+    a.addEventListener('click', function () { if (toggle) toggle.checked = false; });
+  });
+  var links = {};
+  document.querySelectorAll('.sidebar nav a[href^="#"]').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  function activate(id) {
+    var a = links[id]; if (!a) return;
+    document.querySelectorAll('.sidebar nav a.active').forEach(function (x) { x.classList.remove('active'); });
+    a.classList.add('active');
+    var g = a.closest('.nav-group');
+    if (g && g.querySelector('ul')) setOpen(g, true);
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) activate(e.target.id); });
+    }, { rootMargin: '0px 0px -75% 0px' });
+    document.querySelectorAll('.content h2[id], .content h3[id]').forEach(function (h) { io.observe(h); });
+  }
+  activate(location.hash ? location.hash.slice(1) : 'introduction');
+  var top = document.querySelector('.to-top');
+  window.addEventListener('scroll', function () { top.classList.toggle('visible', window.scrollY > 600); }, { passive: true });
+})();
+</script>
+</body>
+</html>
