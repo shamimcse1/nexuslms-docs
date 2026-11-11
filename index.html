@@ -495,10 +495,10 @@ php artisan optimize:clear</code></pre></li>
   <tr><td>Profile</td><td><code>GET profile</code>, <code>POST profile</code> (photo), <code>POST profile/change-password</code></td></tr>
 </table>
 <h3 id="tests">Tests</h3>
-<p>The backend has 303 automated tests. They run on an in-memory SQLite database, so no MySQL is needed (PHP's <code>pdo_sqlite</code> extension must be enabled):</p>
+<p>The backend has 304 automated tests. They run on an in-memory SQLite database, so no MySQL is needed (PHP's <code>pdo_sqlite</code> extension must be enabled):</p>
 <pre><code>php artisan test</code></pre>
 <p>They cover the installer, sign-in and password reset, roles and permissions, enrollment checks, courses and lessons, quizzes and short-answer review, assignments, live classes, certificates, notifications and push, and the API.</p>
-<p>The mobile app has 177 tests, including an architecture test that keeps the code layered:</p>
+<p>The mobile app has 180 tests, including an architecture test that keeps the code layered:</p>
 <pre><code>flutter analyze
 flutter test</code></pre>
 
@@ -555,7 +555,7 @@ flutter run</code></pre></li>
   <tr><td><code>&hellip;/&lt;feature&gt;/presentation</code></td><td><code>bindings</code> (create the controller), <code>controllers</code> (GetX state), <code>screens</code>, <code>widgets</code>, and the screen's text in a <code>*_strings.dart</code> file.</td></tr>
   <tr><td><code>assets</code></td><td><code>.env.example</code> (API address), <code>app_icon</code> (launcher icon source), <code>fonts/inter</code> (Inter with its license) and <code>icons</code> (SVG icons).</td></tr>
   <tr><td><code>android</code>, <code>ios</code></td><td>Platform projects: app name, package name and bundle ID, launcher icons, permissions and signing.</td></tr>
-  <tr><td><code>test</code></td><td>177 tests, laid out like <code>lib</code>, plus <code>architecture_test.dart</code>, which checks that the layers above stay separate.</td></tr>
+  <tr><td><code>test</code></td><td>180 tests, laid out like <code>lib</code>, plus <code>architecture_test.dart</code>, which checks that the layers above stay separate.</td></tr>
 </table>
 <p>To add a screen, copy the layout of an existing feature: add its route name in <code>lib/core/constants/app_routes.dart</code> and register the screen and its binding in <code>lib/app.dart</code>.</p>
 
