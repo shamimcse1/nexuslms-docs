@@ -239,6 +239,7 @@ kbd { padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px;
         <ul id="nav-credits">
           <li><a href="#credits-server">Server</a></li>
           <li><a href="#credits-mobile-app">Mobile app</a></li>
+          <li><a href="#credits-ai">AI disclosure</a></li>
         </ul>
       </li>
       <li class="nav-group">
@@ -510,7 +511,7 @@ flutter test</code></pre>
   <li>Create your settings file from the example and set your API address:
 <pre><code>cp assets/.env.example assets/.env</code></pre>
 <pre><code>API_BASE_URL=https://your-domain.com/api/v1</code></pre>
-  If <code>assets/.env</code> is missing, the app uses the values in <code>assets/.env.example</code>. Out of the box that points to the live demo server (<code>https://nexuslms.dev-shamim.com/api/v1</code>), so you can run the app and sign in with a demo learner account before you set up your own server.
+  If <code>assets/.env</code> is missing, the app uses the values in <code>assets/.env.example</code>. To try the app before your server is ready, set <code>API_BASE_URL=https://nexuslms.dev-shamim.com/api/v1</code> and sign in with the demo learner account from the item description.
   <p>Set <code>API_BASE_URL</code> to your server's address followed by <code>/api/v1</code>:</p>
   <ul>
     <li>Live server: <code>https://your-domain.com/api/v1</code> (use HTTPS; Android blocks plain HTTP in release builds).</li>
@@ -713,6 +714,9 @@ storeFile=/path/to/upload-keystore.jks</code></pre>
   <tr><td><a href="https://rsms.me/inter/">Inter</a> font (bundled, license in <code>assets/fonts/inter/OFL.txt</code>)</td><td>4.1</td><td>SIL Open Font License 1.1</td></tr>
   <tr><td><a href="https://fonts.google.com/icons">Material Symbols</a> icons by Google (SVG files in <code>assets/icons</code>, license in <code>assets/icons/LICENSE-material-symbols.txt</code>)</td><td>&ndash;</td><td>Apache License 2.0</td></tr>
 </table>
+
+<h3 id="credits-ai">AI disclosure</h3>
+<p>AI tools (Claude by Anthropic) were used to help create this item's code, documentation and graphics, including the demo course artwork and the preview images. The author reviewed, edited and tested all of it; the screenshots show the real, working product.</p>
 
 <h2 id="changelog"><span class="hi" aria-hidden="true">📝</span>Changelog</h2>
 <h3 id="changelog-1-0-0">1.0.0</h3>
