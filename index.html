@@ -336,7 +336,7 @@ chown -R www-data:www-data storage bootstrap/cache</code></pre>
 <ol>
   <li><strong>Requirements:</strong> checks the PHP version, extensions and folder permissions. Fix anything marked red before continuing.</li>
   <li><strong>Database:</strong> enter the database host, port, name, user and password. The installer tests the connection and saves it to <code>.env</code>.</li>
-  <li><strong>Migrate:</strong> creates the database tables. The <em>Import demo data</em> option adds sample courses, learners and content. Leave it off on a live site: the sample accounts have default passwords that are the same on every installation.</li>
+  <li><strong>Migrate:</strong> creates the database tables. The <em>Import demo data</em> option adds sample courses, learners and content. On a live site the sample accounts get random passwords, so nobody can sign in with the published demo passwords; set a password under <strong>Admin &rarr; Users</strong> if you need one of them.</li>
   <li><strong>Administrator:</strong> choose the site name, URL and your own administrator name, email and password.</li>
   <li><strong>Finish:</strong> the installer switches the site to production mode (<code>APP_ENV=production</code>, <code>APP_DEBUG=false</code>), links the public storage folder and locks itself. Sign in at <code>/admin</code>.</li>
 </ol>
@@ -346,7 +346,7 @@ chown -R www-data:www-data storage bootstrap/cache</code></pre>
 <figure><img src="assets/screenshots/installation/04-administrator.png" alt="Installer step 4: choose the site name and your own administrator account." loading="lazy"><figcaption>Figure 4: Installer step 4: choose the site name and your own administrator account.</figcaption></figure>
 <figure><img src="assets/screenshots/installation/05-installed.png" alt="The installer finishes, switches to production mode and locks itself." loading="lazy"><figcaption>Figure 5: The installer finishes, switches to production mode and locks itself.</figcaption></figure>
 <figure><img src="assets/screenshots/installation/06-admin-login.png" alt="The admin sign-in page at /admin." loading="lazy"><figcaption>Figure 6: The admin sign-in page at /admin.</figcaption></figure>
-<div class="note">If you imported demo data, change the passwords of the sample accounts (or delete them) under <strong>Admin &rarr; Users</strong> before inviting real learners.</div>
+<div class="note">If you imported demo data, delete the sample accounts under <strong>Admin &rarr; Users</strong> before inviting real learners.</div>
 <p>For a public demo site only, set <code>DEMO_MODE=true</code> in <code>.env</code> to show the sample sign-in accounts on the login pages. It is off by default.</p>
 <h4 id="cron">Scheduler (cron)</h4>
 <p>Live class reminders (every 5 minutes), due date and certificate expiry reminders (once a day at 08:00) and the weekly cleanup of replaced assignment files run through the Laravel scheduler. Add this single cron entry on your server:</p>
@@ -373,7 +373,7 @@ composer install
 npm install &amp;&amp; npm run build
 php artisan key:generate
 php artisan serve</code></pre>
-<p>Create an empty database, open <code>http://127.0.0.1:8000/install</code> and tick <em>Import demo data</em> in step 3 to get sample courses and the <a href="#demo-credentials">demo accounts</a>. The installer switches the site to production mode; for local debugging set <code>APP_DEBUG=true</code> in <code>.env</code> afterwards. Set <code>DEMO_MODE=true</code> to show the demo accounts on the sign-in pages (only for a public demo site).</p>
+<p>Create an empty database, open <code>http://127.0.0.1:8000/install</code> and tick <em>Import demo data</em> in step 3 to get sample courses and the <a href="#demo-credentials">demo accounts</a>. The installer switches the site to production mode; for local debugging set <code>APP_DEBUG=true</code> in <code>.env</code> afterwards. The sample accounts only keep the published <a href="#demo-credentials">demo passwords</a> when <code>DEMO_MODE=true</code> is set in <code>.env</code> before step 3. Demo mode also shows the demo accounts on the sign-in pages, makes the admin panel read-only and stops all email, so use it only for a test or public demo site.</p>
 <h4 id="going-live">Going-live checklist</h4>
 <ul>
   <li><code>APP_URL</code> is your <code>https://</code> address, <code>APP_ENV=production</code> and <code>APP_DEBUG=false</code> (the installer sets these).</li>
