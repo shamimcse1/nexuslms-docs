@@ -137,7 +137,7 @@ kbd { padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px;
     <span class="brand-mark"><img src="assets/logo.svg" alt="" width="40" height="40"></span>
     <span>
       <span class="brand-name">NexusLMS</span>
-      <span class="brand-sub">Documentation <span class="badge">v1.0.0</span></span>
+      <span class="brand-sub">Documentation <span class="badge">v1.0.1</span></span>
     </span>
   </a>
   <div class="sidebar-tools">
@@ -249,6 +249,7 @@ kbd { padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px;
           <button type="button" class="nav-expand" aria-expanded="false" aria-controls="nav-changelog" aria-label="Changelog topics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
         </div>
         <ul id="nav-changelog">
+          <li><a href="#changelog-1-0-1">1.0.1</a></li>
           <li><a href="#changelog-1-0-0">1.0.0</a></li>
         </ul>
       </li>
@@ -267,7 +268,7 @@ kbd { padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px;
   <li><strong>REST API</strong> (<code>/api/v1</code>): token-based API used by the mobile app.</li>
   <li><strong>Mobile app</strong>: the learner experience on iOS and Android, including push notifications.</li>
 </ul>
-<p>This documentation is for <strong>version 1.0.0</strong>. It is a single page that opens offline from the <code>documentation</code> folder.</p>
+<p>This documentation is for <strong>version 1.0.1</strong>. It is a single page that opens offline from the <code>documentation</code> folder.</p>
 <p class="online-note">It is also online, always in its latest version, at <a href="https://shamimcse1.github.io/nexuslms-docs/">shamimcse1.github.io/nexuslms-docs</a>. Use the search box at the top of the menu (or press <kbd>/</kbd>) to find any topic.</p>
 <div class="tip"><strong>Want to look around first?</strong> Open the live demo's <a href="https://nexuslms.dev-shamim.com/admin/login">admin panel</a> or <a href="https://nexuslms.dev-shamim.com/portal/login">learner portal</a>, or install the <a href="https://drive.google.com/file/d/1ejdl6ZOS9fPsexer2O_ShlywmUr_12k1/view?usp=sharing">Android demo app</a>. The demo&rsquo;s data resets every 15 minutes.<br>
 <strong>Admin:</strong> <code>admin@nexuslms.internal</code> / <code>Admin@123456</code><br>
@@ -739,6 +740,22 @@ storeFile=/path/to/upload-keystore.jks</code></pre>
 <p>AI tools (Claude by Anthropic) were used to help create this item's code, documentation and graphics, including the demo course artwork and the preview images. The author reviewed, edited and tested all of it; the screenshots show the real, working product.</p>
 
 <h2 id="changelog"><span class="hi" aria-hidden="true">📝</span>Changelog</h2>
+<h3 id="changelog-1-0-1">1.0.1 (November 23, 2026)</h3>
+<p>A security update for the backend; the Flutter app is unchanged. Follow <a href="#update">Updating to a new version</a>.</p>
+<ul>
+  <li>Fixed: script injection through page tab links and other values shown inside page scripts.</li>
+  <li>Fixed: deactivated or suspended users are signed out at once, including the mobile app; app sign-ins expire after 30 days (<code>SANCTUM_EXPIRATION</code>).</li>
+  <li>Fixed: password resets and password changes sign the app out on every device.</li>
+  <li>Fixed: quiz answers and explanations appear only after the learner passes or uses every attempt, when the quiz allows it; restarting a quiz no longer resets its timer.</li>
+  <li>Fixed: courses set to require a passed quiz or an approved assignment are no longer completed, or certified, by lessons alone.</li>
+  <li>Fixed: users who can edit accounts can no longer give anyone more access than they have.</li>
+  <li>Fixed: CSV exports can no longer run spreadsheet formulas.</li>
+  <li>Fixed: graded assignments cannot be replaced from the learner portal, which now shows the real grade and feedback.</li>
+  <li>Fixed: saved Firebase keys are no longer shown in the settings page.</li>
+  <li>Fixed: learners cannot open unpublished courses.</li>
+  <li>Changed: <em>Import demo data</em> gives the sample accounts random passwords unless <code>DEMO_MODE=true</code>; demo mode now also makes the admin panel read-only.</li>
+  <li>Changed: the version number comes from the code, so <code>APP_VERSION</code> is no longer needed in <code>.env</code>.</li>
+</ul>
 <h3 id="changelog-1-0-0">1.0.0</h3>
 <ul><li>Initial release.</li></ul>
 </div>
