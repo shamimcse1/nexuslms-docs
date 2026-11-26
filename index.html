@@ -55,6 +55,7 @@ h1 { font-size: 36px; margin: 0 0 8px; }
 h2 { font-size: 32px; margin: 64px 0 16px; padding-top: 8px; }
 h2:first-of-type { margin-top: 0; }
 h3 { font-size: 22px; margin: 36px 0 12px; }
+h5 { font-size: 16px; margin: 28px 0 8px; }
 h2 .hi { display: inline-block; margin-right: 12px; }
 [id] { scroll-margin-top: 16px; }
 p, li { color: var(--fg); }
@@ -171,11 +172,14 @@ kbd { padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px;
         <ul id="nav-backend">
           <li><a href="#install">Installation</a></li>
           <li><a href="#admin">Admin panel</a></li>
+          <li><a href="#organisation-model">Organisation model</a></li>
+          <li><a href="#csv-import">Importing users (CSV)</a></li>
           <li><a href="#demo-credentials">Demo credentials</a></li>
           <li><a href="#white-labeling">White-labeling</a></li>
           <li><a href="#portal">Learner portal</a></li>
           <li><a href="#architecture">Architecture</a></li>
           <li><a href="#api">API</a></li>
+          <li><a href="#api-examples">API examples</a></li>
           <li><a href="#tests">Tests</a></li>
         </ul>
       </li>
@@ -429,6 +433,14 @@ php artisan optimize:clear</code></pre></li>
 <figure><img src="assets/screenshots/configuration/12-settings-support.png" alt="Privacy and support settings" loading="lazy"><figcaption>Figure 18: Privacy &amp; Support: IT Help Desk contacts and the privacy policy.</figcaption></figure>
 <p><strong>Privacy &amp; Support</strong> holds the IT Help Desk details (email, phone, help center link and support hours) and your privacy policy. In the mobile app, <strong>IT Help Desk</strong> on the sign-in screen lists the contacts you fill in, and <strong>Privacy Policy</strong> opens the policy inside the app. The policy is also published at <code>https://your-domain.com/privacy-policy</code>, which you can use as the privacy policy link in the App Store and Google Play. Until you write your own, a starter policy is shown; it fills in your company name automatically. You can paste plain text or simple HTML (headings, paragraphs, lists and links).</p>
 
+<h4 id="organisation-model">Organisation model (one company per installation)</h4>
+<p>One NexusLMS installation serves <strong>one organisation</strong>. Its administrators, departments, courses, learners, certificates and settings (name, logo, email, time zone) all live in one database. NexusLMS is not multi-tenant: it does not host several separate companies in a shared database, so there is no per-company data isolation to configure.</p>
+<ul>
+  <li><strong>Super Admin and Company Admin</strong> both manage the same organisation and see the same courses, learners and reports. They differ in permissions, not in data: a Company Admin cannot change roles and permissions, and cannot create, edit or delete Super Admin accounts.</li>
+  <li><strong>How it is enforced.</strong> Every admin page checks the signed-in user's permission on each request, and the account must still be active. Nobody can give a user a role with more permissions than they hold themselves. Learners reach only their own enrolled courses, submissions and certificates, in the portal and through the API.</li>
+  <li><strong>Departments</strong> group people inside the organisation for assigning training and filtering reports. They are not separate companies: an admin or manager sees every department their permissions allow.</li>
+  <li><strong>More than one company.</strong> Install a separate copy for each company, each with its own database and domain or subdomain. Their data stays fully separate. Each installation is a separate end product, so check that your Envato licence covers it.</li>
+</ul>
 <h4 id="admin-access">Who can open what</h4>
 <p>Each admin page needs a permission, and each role holds a set of permissions that you can change under <strong>Admin &rarr; Roles &amp; Permissions</strong>. A Super Admin always has every permission. The defaults are:</p>
 <table>
@@ -446,9 +458,32 @@ php artisan optimize:clear</code></pre></li>
   <li><strong>Settings &rarr; General &amp; Branding:</strong> site and company name, logo and favicon.</li>
   <li><strong>Settings &rarr; Time Zone:</strong> choose your time zone before you schedule live classes or set due dates.</li>
   <li><strong>Settings &rarr; SMTP Email Server:</strong> mail settings, then send a test email.</li>
-  <li><strong>Departments</strong>, then <strong>Users:</strong> add people one by one or import a CSV file (download the sample from the Users page). Each imported person is emailed a link to choose their own password, so set up email first; anyone who misses it can use <em>Forgot password</em> on the sign-in page.</li>
+  <li><strong>Departments</strong>, then <strong>Users:</strong> add people one by one or import a CSV file (see <a href="#csv-import">Importing users from a CSV file</a>). Each imported person is emailed a link to choose their own password, so set up email first; anyone who misses it can use <em>Forgot password</em> on the sign-in page.</li>
   <li><strong>Courses:</strong> create a course, add modules and lessons, add quizzes and assignments, publish it and assign it to departments or people.</li>
 </ol>
+<h4 id="csv-import">Importing users from a CSV file</h4>
+<p>Go to <strong>Admin &rarr; Users &rarr; Import CSV</strong>. <strong>Download Template CSV</strong> in the import window gives you a file with the right columns. Rules for the file:</p>
+<ul>
+  <li><strong>Format:</strong> a <code>.csv</code> (or <code>.txt</code>) file up to 5 MB, comma-separated, UTF-8. Excel's <em>CSV UTF-8 (Comma delimited)</em> works. Put a value in double quotes if it contains a comma.</li>
+  <li><strong>First row:</strong> the column names below. Capitals and spaces around the names don't matter, and <strong>the columns can be in any order</strong>. Other columns are ignored.</li>
+  <li><strong>One person per row.</strong> Each row needs the same number of columns as the first row; leave a value empty rather than leaving it out. Empty rows are ignored.</li>
+</ul>
+<table>
+  <tr><th>Column</th><th>Required</th><th>Accepted values</th><th>If empty or not valid</th></tr>
+  <tr><td><code>email</code></td><td>Yes</td><td>A valid email address that is not already used</td><td>The row is skipped. Existing users are never changed by an import.</td></tr>
+  <tr><td><code>name</code></td><td>Recommended</td><td>Full name, for example <code>Jane Doe</code></td><td>The person is named <em>New Employee</em>.</td></tr>
+  <tr><td><code>phone</code></td><td>No</td><td>Any text, for example <code>+1 (555) 111-2233</code></td><td>Left empty.</td></tr>
+  <tr><td><code>designation</code></td><td>No</td><td>Job title, for example <code>Security Analyst</code></td><td>Left empty.</td></tr>
+  <tr><td><code>department_name</code></td><td>No</td><td>A department name. If no department has that exact name, a new department is created.</td><td>No department.</td></tr>
+  <tr><td><code>role</code></td><td>No</td><td>A role name exactly as shown under <strong>Roles &amp; Permissions</strong>, with the same capitals: <code>Employee</code>, <code>Instructor</code>, <code>Manager</code>, <code>Company Admin</code>, or a role you created. Only roles you are allowed to give are accepted.</td><td><code>Employee</code>.</td></tr>
+  <tr><td><code>status</code></td><td>No</td><td><code>active</code>, <code>inactive</code> or <code>suspended</code></td><td><code>active</code>.</td></tr>
+</table>
+<p>Example file:</p>
+<pre><code>name,email,phone,designation,department_name,role,status
+Jane Doe,jane.doe@corporation.com,+1 (555) 111-2233,Security Analyst,Information Security &amp; Cyber Defense,Employee,active
+Rachel Green,rachel.green@corporation.com,,Compliance Officer,Corporate Governance &amp; Risk,Manager,active
+"Smith, Michael",michael.smith@corporation.com,,DevOps Specialist,Software Engineering &amp; Cloud Ops,Employee,inactive</code></pre>
+<p>Nobody gets a password in the file. Each <em>active</em> person receives a welcome email and a link to choose their own password, so set up email first. Inactive and suspended people get no email. After the import, a message shows how many people were imported, how many rows were skipped and how many emails were sent. Anyone whose email did not arrive can use <em>Forgot password</em> on the sign-in page.</p>
 <h3 id="demo-credentials">Demo credentials</h3>
 <p>Demo accounts exist only if you tick <em>Import demo data</em> in the installer. The administrator you create in the installer is separate and uses your own password.</p>
 <table>
@@ -517,6 +552,299 @@ php artisan optimize:clear</code></pre></li>
   <tr><td>Notifications</td><td><code>GET notifications</code>, <code>POST notifications/{id}/read</code>, <code>notifications/read-all</code>, <code>POST device-token</code></td></tr>
   <tr><td>Profile</td><td><code>GET profile</code>, <code>POST profile</code> (photo), <code>POST profile/change-password</code></td></tr>
 </table>
+<h4 id="api-examples">Request and response examples</h4>
+<p>These examples were recorded from a NexusLMS 1.0.1 server with the demo data. Send <code>Accept: application/json</code> with every request, and <code>Authorization: Bearer &lt;token&gt;</code> (the token from sign-in) with every request except sign-in and password reset. Long lists are shortened to one item here; real responses return every item.</p>
+<p><strong>Response format.</strong> Successful responses have <code>success</code>, <code>message</code> and <code>data</code>. Errors have a <code>message</code>, and form errors also list <code>errors</code> by field. Status codes: 401 (missing or expired token), 403 (not allowed, for example an inactive account), 404 (not found, or not visible to this learner), 422 (invalid input or wrong password) and 429 (too many requests).</p>
+<h5>Sign in: <code>POST /api/v1/auth/login</code></h5>
+<pre><code>curl -X POST https://your-domain.com/api/v1/auth/login \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
+  -d '{"email":"employee@corporation.com","password":"Password@123","device_name":"iPhone 16"}'</code></pre>
+<p>Response (200). Keep <code>data.token</code> and send it as the bearer token from now on:</p>
+<pre><code>{
+  "success": true,
+  "message": "Authenticated successfully.",
+  "data": {
+    "token": "1|9524anQDdY4dBRSy8qM49RZ9BTCWfKh9VizpQ2JDc24fc9ae",
+    "token_type": "Bearer",
+    "user": {
+      "id": 5,
+      "name": "Jordan Lee",
+      "email": "employee@corporation.com",
+      "phone": "+1 (555) 678-9012",
+      "avatar_url": null,
+      "designation": "Associate Security Analyst",
+      "department": {
+        "id": 1,
+        "name": "Information Security &amp; Cyber Defense",
+        "code": "SEC-01"
+      },
+      "roles": [
+        "Employee"
+      ]
+    }
+  }
+}</code></pre>
+<p>Wrong email or password (422):</p>
+<pre><code>{
+  "success": false,
+  "message": "Invalid email or password credentials.",
+  "errors": {
+    "email": [
+      "These credentials do not match our corporate records."
+    ]
+  }
+}</code></pre>
+<p>Missing or invalid fields (422):</p>
+<pre><code>{
+  "message": "The email field must be a valid email address. (and 1 more error)",
+  "errors": {
+    "email": [
+      "The email field must be a valid email address."
+    ],
+    "password": [
+      "The password field is required."
+    ]
+  }
+}</code></pre>
+<p>Any request without a valid token (401):</p>
+<pre><code>{
+  "message": "Unauthenticated."
+}</code></pre>
+<h5>List my courses: <code>GET /api/v1/courses</code></h5>
+<p>Returns the learner's enrolled courses, newest first, 10 per page. Optional query parameters: <code>filter</code> (<code>all</code>, <code>in_progress</code>, <code>completed</code> or <code>not_started</code>), <code>search</code> (course title or code), <code>per_page</code> and <code>page</code>.</p>
+<pre><code>curl "https://your-domain.com/api/v1/courses?filter=in_progress&amp;per_page=10" \
+  -H "Accept: application/json" -H "Authorization: Bearer 1|9524…"</code></pre>
+<p>Response (200), one course shown:</p>
+<pre><code>{
+  "success": true,
+  "message": "Courses retrieved successfully.",
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "enrollment_id": 1,
+        "course_id": 1,
+        "slug": "zero-trust-architecture-threat-modeling",
+        "title": "Zero-Trust Architecture &amp; Threat Modeling",
+        "code": "SEC-401",
+        "thumbnail_url": "https://your-domain.com/storage/courses/demo-zero-trust-architecture-threat-modeling.jpg",
+        "category": "Cybersecurity &amp; Defense",
+        "instructor": "Dr. Elena Rostova",
+        "level": "advanced",
+        "duration": "4h 45m",
+        "progress_percentage": 33.33,
+        "status": "in_progress",
+        "enrolled_at": "2026-11-21T03:03:21+00:00",
+        "due_date": null,
+        "total_lessons": 3,
+        "completed_lessons": 1
+      }
+    ],
+    "first_page_url": "https://your-domain.com/api/v1/courses?page=1",
+    "from": 1,
+    "last_page": 1,
+    "last_page_url": "https://your-domain.com/api/v1/courses?page=1",
+    "links": [
+      {
+        "url": null,
+        "label": "&amp;laquo; Previous",
+        "page": null,
+        "active": false
+      }
+    ],
+    "next_page_url": null,
+    "path": "https://your-domain.com/api/v1/courses",
+    "per_page": 10,
+    "prev_page_url": null,
+    "to": 4,
+    "total": 4
+  }
+}</code></pre>
+<h5>Course details: <code>GET /api/v1/courses/{slug}</code></h5>
+<p>Response (200), one module and one lesson shown. A course that does not exist or is not published returns 404.</p>
+<pre><code>{
+  "success": true,
+  "message": "Course details retrieved successfully.",
+  "data": {
+    "id": 4,
+    "slug": "security-awareness-essentials",
+    "title": "Security Awareness Essentials",
+    "code": "SEC-101",
+    "short_description": "The everyday habits that stop phishing, account takeover and data leaks.",
+    "description": "A practical, mandatory course for every employee: strong sign-in, spotting phishing, safe handling of devices and data, and how to report incidents.",
+    "thumbnail_url": "https://your-domain.com/storage/courses/demo-security-awareness-essentials.jpg",
+    "category": "Cybersecurity &amp; Defense",
+    "level": "beginner",
+    "duration": "1h 30m",
+    "language": "en",
+    "instructor": {
+      "name": "Dr. Elena Rostova",
+      "designation": "Principal Security Researcher &amp; Lead Instructor",
+      "avatar_url": null
+    },
+    "is_enrolled": true,
+    "enrollment": {
+      "progress_percentage": 100,
+      "status": "completed",
+      "enrolled_at": "2026-11-06T03:03:24+00:00",
+      "due_date": "2026-12-03T03:03:24+00:00"
+    },
+    "modules": [
+      {
+        "id": 3,
+        "title": "Recognizing threats",
+        "description": "How attackers target people and how to spot them.",
+        "order": 1,
+        "lessons_count": 2,
+        "lessons": [
+          {
+            "id": 4,
+            "title": "Spot a phishing email",
+            "duration": "4 min",
+            "content_type": "video",
+            "is_preview": true,
+            "is_completed": true,
+            "order": 1
+          }
+        ]
+      }
+    ],
+    "quizzes": [
+      {
+        "id": 2,
+        "title": "Security Awareness Check",
+        "description": "Check what you learned in Security Awareness Essentials.",
+        "duration_minutes": 20,
+        "passing_score": 70,
+        "total_questions": 3
+      }
+    ],
+    "assignments": []
+  }
+}</code></pre>
+<h5>Complete a lesson: <code>POST /api/v1/courses/{slug}/lessons/{id}/complete</code></h5>
+<p>Response (200) with the new course progress:</p>
+<pre><code>{
+  "success": true,
+  "message": "Lesson marked as completed.",
+  "data": {
+    "progress_percentage": 66.67,
+    "course_status": "in_progress",
+    "next_lesson_id": null,
+    "is_course_completed": false
+  }
+}</code></pre>
+<h5>Take a quiz: <code>POST /api/v1/quizzes/{id}/start</code>, then <code>POST /api/v1/quizzes/{id}/submit</code></h5>
+<p>Start returns the questions without the correct answers, and the time limit, which the server counts. Starting again while time is left keeps the original start time. Response (200), one question shown:</p>
+<pre><code>{
+  "success": true,
+  "message": "Quiz attempt started.",
+  "data": {
+    "quiz_id": 1,
+    "started_at": "2026-11-26T03:04:00+00:00",
+    "expires_at": "2026-11-26T03:49:00+00:00",
+    "title": "Module 1-4 Final Compliance Evaluation &amp; Knowledge Check",
+    "duration_minutes": 45,
+    "duration_seconds": 2700,
+    "total_questions": 4,
+    "attempt_number": 2,
+    "questions": [
+      {
+        "id": 1,
+        "question_text": "Under Zero-Trust architecture (NIST SP 800-207), which principle dictates access verification for every session request regardless of internal network location?",
+        "question_type": "mcq",
+        "points": 15,
+        "order": 1,
+        "options": [
+          {
+            "id": 1,
+            "option_text": "Perimeter Security &amp; Demilitarized Zones (DMZ)",
+            "order": 1
+          },
+          {
+            "id": 2,
+            "option_text": "Implicit Trust within Corporate VPN Gateways",
+            "order": 2
+          },
+          {
+            "id": 3,
+            "option_text": "Never Trust, Always Explicitly Verify with Continuous Context",
+            "order": 3
+          },
+          {
+            "id": 4,
+            "option_text": "Periodic Weekly Password Resets",
+            "order": 4
+          }
+        ]
+      }
+    ]
+  }
+}</code></pre>
+<p>Submit one entry per question: <code>selected_option_ids</code> for multiple-choice and true/false questions, and <code>text_answer</code> for short-answer questions. An empty list leaves a question unanswered.</p>
+<pre><code>curl -X POST https://your-domain.com/api/v1/quizzes/1/submit \
+  -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer 1|9524…" \
+  -d '{"answers":[
+        {"question_id":1,"selected_option_ids":[3]},
+        {"question_id":2,"selected_option_ids":[5]},
+        {"question_id":3,"selected_option_ids":[]},
+        {"question_id":4,"selected_option_ids":[],"text_answer":"Grant each person only the access their role needs."}
+      ]}'</code></pre>
+<p>Response (200). Short answers count once an instructor has reviewed them:</p>
+<pre><code>{
+  "success": true,
+  "message": "You did not meet the passing grade. Review the materials and try again.",
+  "data": {
+    "attempt_id": 21,
+    "attempt_number": 2,
+    "score": 63,
+    "points_earned": 25,
+    "total_points": 40,
+    "passing_score": 80,
+    "pass_mark": 80,
+    "passed": false,
+    "status": "failed",
+    "timed_out": false,
+    "can_retake": true
+  }
+}</code></pre>
+<h5>Submit an assignment: <code>POST /api/v1/assignments/{id}/submit</code></h5>
+<p>Send the file as <code>multipart/form-data</code> in the <code>file</code> field, with optional <code>notes</code>. The allowed file types and maximum size come from the assignment. A graded assignment cannot be replaced (422).</p>
+<pre><code>curl -X POST https://your-domain.com/api/v1/assignments/2/submit \
+  -H "Accept: application/json" -H "Authorization: Bearer 1|9524…" \
+  -F "file=@gap-analysis.pdf" -F "notes=Gap analysis for the VPN policy."</code></pre>
+<p>Response (200). <code>file_url</code> is a signed link that expires:</p>
+<pre><code>{
+  "success": true,
+  "message": "Assignment submitted successfully.",
+  "data": {
+    "id": 4,
+    "file_name": "gap-analysis.pdf",
+    "file_url": "https://your-domain.com/storage/assignments/2/5-4zwnul19x4/gap-analysis.pdf?expires=…&amp;signature=…",
+    "status": "submitted",
+    "submitted_at": "2026-11-26T03:04:00+00:00"
+  }
+}</code></pre>
+<h5>My certificates: <code>GET /api/v1/certificates</code></h5>
+<p>Response (200). <code>verification_url</code> is the public page anyone can use to check a certificate:</p>
+<pre><code>{
+  "success": true,
+  "message": "Certificates retrieved.",
+  "data": [
+    {
+      "id": 18,
+      "certificate_number": "CERT-2026-WQEXDQ",
+      "title": "Security Awareness Essentials",
+      "course_code": "SEC-101",
+      "issue_date": "2026-11-26",
+      "issue_date_formatted": "Nov 26, 2026",
+      "expiry_date": "2027-11-26",
+      "status": "active",
+      "view_url": "https://your-domain.com/portal/certificates/18",
+      "verification_url": "https://your-domain.com/verify/certificate/CERT-2026-WQEXDQ"
+    }
+  ]
+}</code></pre>
 <h3 id="tests">Tests</h3>
 <p>The backend has 320 automated tests. They run on an in-memory SQLite database, so no MySQL is needed (PHP's <code>pdo_sqlite</code> extension must be enabled):</p>
 <pre><code>php artisan test</code></pre>
@@ -553,6 +881,14 @@ flutter run</code></pre></li>
   <figure><img src="assets/screenshots/mobile/04-certificates.png" alt="Certificates, with a public verification link." loading="lazy"><figcaption>Figure 27: Certificates, with a public verification link.</figcaption></figure>
   <figure><img src="assets/screenshots/mobile/05-live-classes.png" alt="Live classes and past recordings." loading="lazy"><figcaption>Figure 28: Live classes and past recordings.</figcaption></figure>
   <figure><img src="assets/screenshots/mobile/06-notifications.png" alt="Notifications, grouped by day." loading="lazy"><figcaption>Figure 29: Notifications, grouped by day.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/07-quiz-intro.png" alt="Quiz overview: questions, time limit, pass mark and earlier attempts." loading="lazy"><figcaption>Figure 30: Quiz overview: questions, time limit, pass mark and earlier attempts.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/08-quiz-question.png" alt="Taking a timed quiz: one question at a time with a progress bar." loading="lazy"><figcaption>Figure 31: Taking a timed quiz: one question at a time with a progress bar.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/09-quiz-short-answer.png" alt="Short-answer questions are marked by an instructor." loading="lazy"><figcaption>Figure 32: Short-answer questions are marked by an instructor.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/10-quiz-result.png" alt="Quiz result with the score and answer review." loading="lazy"><figcaption>Figure 33: Quiz result with the score and answer review.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/11-assignment-submit.png" alt="Assignment brief and file upload." loading="lazy"><figcaption>Figure 34: Assignment brief and file upload.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/12-assignment-submitted.png" alt="A submitted assignment waiting for review." loading="lazy"><figcaption>Figure 35: A submitted assignment waiting for review.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/13-certificates-detail.png" alt="Certificate details: serial number, issue and expiry dates." loading="lazy"><figcaption>Figure 36: Certificate details: serial number, issue and expiry dates.</figcaption></figure>
+  <figure><img src="assets/screenshots/mobile/14-certificate-verify.png" alt="View & Verify opens the public verification page." loading="lazy"><figcaption>Figure 37: View & Verify opens the public verification page.</figcaption></figure>
 </div>
 
 <h3 id="mobile-setup-testing-on-a-real-phone">Testing on a real phone</h3>
@@ -586,15 +922,15 @@ flutter run</code></pre></li>
 <h3 id="mobile-rename-app-name">App name</h3>
 <ul>
   <li>Android: change <code>android:label</code> in <code>android/app/src/main/AndroidManifest.xml</code>.
-    <figure><img src="assets/screenshots/mobile-setup/01-android-app-name.png" alt="Android app name in AndroidManifest.xml" loading="lazy"><figcaption>Figure 30: The Android app name is the <code>android:label</code> value in <code>AndroidManifest.xml</code>.</figcaption></figure></li>
+    <figure><img src="assets/screenshots/mobile-setup/01-android-app-name.png" alt="Android app name in AndroidManifest.xml" loading="lazy"><figcaption>Figure 38: The Android app name is the <code>android:label</code> value in <code>AndroidManifest.xml</code>.</figcaption></figure></li>
   <li>iOS: open <code>ios/Runner.xcworkspace</code> in Xcode, select the <em>Runner</em> target and set <em>Display Name</em> on the <em>General</em> tab (this writes <code>CFBundleDisplayName</code> in <code>ios/Runner/Info.plist</code>).</li>
 </ul>
 <h3 id="mobile-rename-package-name-android-and-bundle-id-ios">Package name (Android) and bundle ID (iOS)</h3>
 <ul>
   <li>Android: change <code>applicationId</code> and <code>namespace</code> in <code>android/app/build.gradle.kts</code>, then move <code>MainActivity.kt</code> to the matching folder under <code>android/app/src/main/kotlin/</code> and update its <code>package</code> line.
-    <figure><img src="assets/screenshots/mobile-setup/02-android-package-name.png" alt="Android applicationId in build.gradle.kts" loading="lazy"><figcaption>Figure 31: The Android package name is <code>applicationId</code> in <code>android/app/build.gradle.kts</code>.</figcaption></figure></li>
+    <figure><img src="assets/screenshots/mobile-setup/02-android-package-name.png" alt="Android applicationId in build.gradle.kts" loading="lazy"><figcaption>Figure 39: The Android package name is <code>applicationId</code> in <code>android/app/build.gradle.kts</code>.</figcaption></figure></li>
   <li>iOS: in Xcode, select the <em>Runner</em> target and change <em>Bundle Identifier</em> under <em>General &rarr; Identity</em>. Choose your team under <em>Signing &amp; Capabilities</em>.
-    <figure><img src="assets/screenshots/mobile-setup/03-ios-bundle-id.png" alt="Xcode Identity settings" loading="lazy"><figcaption>Figure 32: Display Name, Bundle Identifier and version in Xcode, under Runner &rarr; General &rarr; Identity.</figcaption></figure></li>
+    <figure><img src="assets/screenshots/mobile-setup/03-ios-bundle-id.png" alt="Xcode Identity settings" loading="lazy"><figcaption>Figure 40: Display Name, Bundle Identifier and version in Xcode, under Runner &rarr; General &rarr; Identity.</figcaption></figure></li>
 </ul>
 
 <h2 id="mobile-branding"><span class="hi" aria-hidden="true">🎨</span>Icon, colors and font</h2>
@@ -617,7 +953,7 @@ keyAlias=upload
 storeFile=/path/to/upload-keystore.jks</code></pre>
   <code>storeFile</code> is the full path to the keystore you created. On Windows, use forward slashes, for example <code>C:/keys/upload-keystore.jks</code>. Never commit <code>key.properties</code> or the keystore; both are already in <code>android/.gitignore</code>.
   <p>You don't need to edit any Gradle file. <code>android/app/build.gradle.kts</code> already reads <code>key.properties</code> and signs release builds with it. Without the file, release builds fall back to the debug key, which Google Play does not accept.</p>
-  <figure><img src="assets/screenshots/mobile-setup/04-android-release-signing.png" alt="Release signing in android/app/build.gradle.kts" loading="lazy"><figcaption>Figure 33: <code>signingConfigs</code> reads <code>key.properties</code>; the <code>release</code> build type uses it.</figcaption></figure></li>
+  <figure><img src="assets/screenshots/mobile-setup/04-android-release-signing.png" alt="Release signing in android/app/build.gradle.kts" loading="lazy"><figcaption>Figure 41: <code>signingConfigs</code> reads <code>key.properties</code>; the <code>release</code> build type uses it.</figcaption></figure></li>
   <li>Build the app bundle for Google Play:
 <pre><code>flutter build appbundle --release</code></pre></li>
 </ol>
@@ -634,22 +970,22 @@ storeFile=/path/to/upload-keystore.jks</code></pre>
 <h3 id="push-1-create-a-firebase-project">1. Create a Firebase project</h3>
 <ol>
   <li>Create a project in the <a href="https://console.firebase.google.com/">Firebase console</a>.
-    <figure><img src="assets/screenshots/firebase/01-create-project.png" alt="Create a Firebase project" loading="lazy"><figcaption>Figure 34: Create a Firebase project and give it a name.</figcaption></figure></li>
+    <figure><img src="assets/screenshots/firebase/01-create-project.png" alt="Create a Firebase project" loading="lazy"><figcaption>Figure 42: Create a Firebase project and give it a name.</figcaption></figure></li>
   <li>Add an Android app with your package name (the same <code>applicationId</code> as above) and click <em>Register app</em>.
-    <figure><img src="assets/screenshots/firebase/02-add-android-app.png" alt="Add Firebase to the Android app" loading="lazy"><figcaption>Figure 35: Register the Android app with your package name.</figcaption></figure></li>
+    <figure><img src="assets/screenshots/firebase/02-add-android-app.png" alt="Add Firebase to the Android app" loading="lazy"><figcaption>Figure 43: Register the Android app with your package name.</figcaption></figure></li>
   <li>Download <code>google-services.json</code> and put it in <code>mobile/android/app/</code>, next to <code>build.gradle.kts</code>.
-    <figure><img src="assets/screenshots/firebase/03-android-google-services-json.png" alt="google-services.json location" loading="lazy"><figcaption>Figure 36: <code>google-services.json</code> goes in <code>mobile/android/app/</code>.</figcaption></figure></li>
+    <figure><img src="assets/screenshots/firebase/03-android-google-services-json.png" alt="google-services.json location" loading="lazy"><figcaption>Figure 44: <code>google-services.json</code> goes in <code>mobile/android/app/</code>.</figcaption></figure></li>
   <li>Add an Apple app with your bundle ID, then download <code>GoogleService-Info.plist</code> into <code>mobile/ios/Runner/</code>.
-    <figure><img src="assets/screenshots/firebase/04-add-apple-app.png" alt="Add Firebase to the Apple app" loading="lazy"><figcaption>Figure 37: Register the Apple app with your bundle ID.</figcaption></figure></li>
+    <figure><img src="assets/screenshots/firebase/04-add-apple-app.png" alt="Add Firebase to the Apple app" loading="lazy"><figcaption>Figure 45: Register the Apple app with your bundle ID.</figcaption></figure></li>
   <li>For iOS, open <em>Project settings &rarr; Cloud Messaging</em>, select your Apple app and upload an APNs authentication key (.p8) from your Apple Developer account.
-    <figure><img src="assets/screenshots/firebase/05-cloud-messaging.png" alt="Firebase Cloud Messaging settings" loading="lazy"><figcaption>Figure 38: Cloud Messaging settings: select the Apple app.</figcaption></figure>
-    <figure><img src="assets/screenshots/firebase/06-apns-auth-key.png" alt="Upload APNs authentication key" loading="lazy"><figcaption>Figure 39: Upload the APNs authentication key (development and production).</figcaption></figure></li>
+    <figure><img src="assets/screenshots/firebase/05-cloud-messaging.png" alt="Firebase Cloud Messaging settings" loading="lazy"><figcaption>Figure 46: Cloud Messaging settings: select the Apple app.</figcaption></figure>
+    <figure><img src="assets/screenshots/firebase/06-apns-auth-key.png" alt="Upload APNs authentication key" loading="lazy"><figcaption>Figure 47: Upload the APNs authentication key (development and production).</figcaption></figure></li>
 </ol>
 <p>The build picks these files up automatically. Without them, the app builds and runs with push turned off.</p>
 <h3 id="push-2-connect-the-server">2. Connect the server</h3>
 <ol>
   <li>In the Firebase console, open <em>Project settings &rarr; Service accounts</em> and click <em>Generate new private key</em> (a JSON file). Keep this file private.
-    <figure><img src="assets/screenshots/firebase/07-service-account-key.png" alt="Generate a Firebase service account key" loading="lazy"><figcaption>Figure 40: Generate the service-account key that the server uses to send pushes.</figcaption></figure></li>
+    <figure><img src="assets/screenshots/firebase/07-service-account-key.png" alt="Generate a Firebase service account key" loading="lazy"><figcaption>Figure 48: Generate the service-account key that the server uses to send pushes.</figcaption></figure></li>
   <li>In <strong>Admin &rarr; Settings &rarr; Firebase</strong>, enable push, upload or paste that JSON file, and choose which events send a push: course assignment, assignment grading, certificates and live class reminders.</li>
 </ol>
 
@@ -740,8 +1076,8 @@ storeFile=/path/to/upload-keystore.jks</code></pre>
 <p>AI tools (Claude by Anthropic) were used to help create this item's code, documentation and graphics, including the demo course artwork and the preview images. The author reviewed, edited and tested all of it; the screenshots show the real, working product.</p>
 
 <h2 id="changelog"><span class="hi" aria-hidden="true">📝</span>Changelog</h2>
-<h3 id="changelog-1-0-1">1.0.1 (November 23, 2026)</h3>
-<p>A security update for the backend; the Flutter app is unchanged. Follow <a href="#update">Updating to a new version</a>.</p>
+<h3 id="changelog-1-0-1">1.0.1 (November 26, 2026)</h3>
+<p>A security and documentation update for the backend; the Flutter app has no functional changes. Follow <a href="#update">Updating to a new version</a>.</p>
 <ul>
   <li>Fixed: script injection through page tab links and other values shown inside page scripts.</li>
   <li>Fixed: deactivated or suspended users are signed out at once, including the mobile app; app sign-ins expire after 30 days (<code>SANCTUM_EXPIRATION</code>).</li>
@@ -755,8 +1091,11 @@ storeFile=/path/to/upload-keystore.jks</code></pre>
   <li>Fixed: learners cannot open unpublished courses.</li>
   <li>Changed: <em>Import demo data</em> gives the sample accounts random passwords unless <code>DEMO_MODE=true</code>; demo mode now also makes the admin panel read-only.</li>
   <li>Changed: the version number comes from the code, so <code>APP_VERSION</code> is no longer needed in <code>.env</code>.</li>
+  <li>Fixed: the CSV user import reads files saved as Excel's <em>CSV UTF-8</em>.</li>
+  <li>Added: <a href="#api-examples">API request and response examples</a>, the <a href="#organisation-model">organisation model</a>, the <a href="#csv-import">CSV import format</a>, and app screenshots of quizzes, assignments and certificates.</li>
+  <li>Changed: code comments in the backend and app no longer refer to design-file node IDs.</li>
 </ul>
-<h3 id="changelog-1-0-0">1.0.0</h3>
+<h3 id="changelog-1-0-0">1.0.0 (November 19, 2026)</h3>
 <ul><li>Initial release.</li></ul>
 </div>
 </main>
