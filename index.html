@@ -172,7 +172,7 @@ kbd { padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px;
         <ul id="nav-backend">
           <li><a href="#install">Installation</a></li>
           <li><a href="#admin">Admin panel</a></li>
-          <li><a href="#organisation-model">Organisation model</a></li>
+          <li><a href="#organization-model">Organization model</a></li>
           <li><a href="#csv-import">Importing users (CSV)</a></li>
           <li><a href="#demo-credentials">Demo credentials</a></li>
           <li><a href="#white-labeling">White-labeling</a></li>
@@ -433,13 +433,13 @@ php artisan optimize:clear</code></pre></li>
 <figure><img src="assets/screenshots/configuration/12-settings-support.png" alt="Privacy and support settings" loading="lazy"><figcaption>Figure 18: Privacy &amp; Support: IT Help Desk contacts and the privacy policy.</figcaption></figure>
 <p><strong>Privacy &amp; Support</strong> holds the IT Help Desk details (email, phone, help center link and support hours) and your privacy policy. In the mobile app, <strong>IT Help Desk</strong> on the sign-in screen lists the contacts you fill in, and <strong>Privacy Policy</strong> opens the policy inside the app. The policy is also published at <code>https://your-domain.com/privacy-policy</code>, which you can use as the privacy policy link in the App Store and Google Play. Until you write your own, a starter policy is shown; it fills in your company name automatically. You can paste plain text or simple HTML (headings, paragraphs, lists and links).</p>
 
-<h4 id="organisation-model">Organisation model (one company per installation)</h4>
-<p>One NexusLMS installation serves <strong>one organisation</strong>. Its administrators, departments, courses, learners, certificates and settings (name, logo, email, time zone) all live in one database. NexusLMS is not multi-tenant: it does not host several separate companies in a shared database, so there is no per-company data isolation to configure.</p>
+<h4 id="organization-model">Organization model (one company per installation)</h4>
+<p>One NexusLMS installation serves <strong>one organization</strong>. Its administrators, departments, courses, learners, certificates and settings (name, logo, email, time zone) all live in one database. NexusLMS is not multi-tenant: it does not host several separate companies in a shared database, so there is no per-company data isolation to configure.</p>
 <ul>
-  <li><strong>Super Admin and Company Admin</strong> both manage the same organisation and see the same courses, learners and reports. They differ in permissions, not in data: a Company Admin cannot change roles and permissions, and cannot create, edit or delete Super Admin accounts.</li>
+  <li><strong>Super Admin and Company Admin</strong> both manage the same organization and see the same courses, learners and reports. They differ in permissions, not in data: a Company Admin cannot change roles and permissions, and cannot create, edit or delete Super Admin accounts.</li>
   <li><strong>How it is enforced.</strong> Every admin page checks the signed-in user's permission on each request, and the account must still be active. Nobody can give a user a role with more permissions than they hold themselves. Learners reach only their own enrolled courses, submissions and certificates, in the portal and through the API.</li>
-  <li><strong>Departments</strong> group people inside the organisation for assigning training and filtering reports. They are not separate companies: an admin or manager sees every department their permissions allow.</li>
-  <li><strong>More than one company.</strong> Install a separate copy for each company, each with its own database and domain or subdomain. Their data stays fully separate. Each installation is a separate end product, so check that your Envato licence covers it.</li>
+  <li><strong>Departments</strong> group people inside the organization for assigning training and filtering reports. They are not separate companies: an admin or manager sees every department their permissions allow.</li>
+  <li><strong>More than one company.</strong> Install a separate copy for each company, each with its own database and domain or subdomain. Their data stays fully separate. Each installation is a separate end product, so check that your Envato license covers it.</li>
 </ul>
 <h4 id="admin-access">Who can open what</h4>
 <p>Each admin page needs a permission, and each role holds a set of permissions that you can change under <strong>Admin &rarr; Roles &amp; Permissions</strong>. A Super Admin always has every permission. The defaults are:</p>
@@ -1092,7 +1092,7 @@ storeFile=/path/to/upload-keystore.jks</code></pre>
   <li>Changed: <em>Import demo data</em> gives the sample accounts random passwords unless <code>DEMO_MODE=true</code>; demo mode now also makes the admin panel read-only.</li>
   <li>Changed: the version number comes from the code, so <code>APP_VERSION</code> is no longer needed in <code>.env</code>.</li>
   <li>Fixed: the CSV user import reads files saved as Excel's <em>CSV UTF-8</em>.</li>
-  <li>Added: <a href="#api-examples">API request and response examples</a>, the <a href="#organisation-model">organisation model</a>, the <a href="#csv-import">CSV import format</a>, and app screenshots of quizzes, assignments and certificates.</li>
+  <li>Added: <a href="#api-examples">API request and response examples</a>, the <a href="#organization-model">organization model</a>, the <a href="#csv-import">CSV import format</a>, and app screenshots of quizzes, assignments and certificates.</li>
   <li>Changed: code comments in the backend and app no longer refer to design-file node IDs.</li>
 </ul>
 <h3 id="changelog-1-0-0">1.0.0 (November 19, 2026)</h3>
